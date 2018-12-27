@@ -1,0 +1,20 @@
+{
+  "realm": "master",
+  "resource": "fuseki-server",
+  "auth-server-url": "https://localhost:8080/auth",
+  "ssl-required": "external",
+  "use-resource-role-mappings": false,
+  "enable-cors": true,
+  "public-client": true,
+  "cors-max-age": 1000,
+  "cors-allowed-methods": "POST, PUT, DELETE, GET",
+  "bearer-only": false,
+  "enable-basic-auth": false,
+  "expose-token": true,
+  "connection-pool-size": 20,
+  "disable-trust-manager": false,
+  "allow-any-hostname": false,
+  "token-minimum-time-to-live": 10,
+  "min-time-between-jwks-requests": 10,
+  "public-key-cache-ttl": 86400
+}
