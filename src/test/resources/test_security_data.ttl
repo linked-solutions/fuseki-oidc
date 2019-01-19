@@ -1,0 +1,24 @@
+@prefix sec: <http://www.smartparticipation.com/security#> .
+@prefix users: <http://www.smartparticipation.com/users#> .
+@prefix graphs: <http://www.smartparticipation.com/graphs#> .
+
+<http://www.smartparticipation.com/graphPermission/1> graphs:graph <http://www.smartparticipation.com/graphs/1> ;
+                                                      sec:accessType "READ" .
+<http://www.smartparticipation.com/graphPermission/2> graphs:graph <http://www.smartparticipation.com/graphs/1> ;
+                                                      sec:accessType "CREATE" .
+<http://www.smartparticipation.com/graphPermission/3> graphs:graph <http://www.smartparticipation.com/graphs/1> ;
+                                                      sec:accessType "UPDATE" .
+<http://www.smartparticipation.com/graphPermission/4> graphs:graph <http://www.smartparticipation.com/graphs/1> ;
+                                                      sec:accessType "DELETE" .
+
+
+<http://www.smartparticipation.com/users/1> users:email "user.one@mail.com" ;
+        users:name  "User One" ;
+        sec:graphAccess <http://www.smartparticipation.com/graphPermission/1> .
+
+<http://www.smartparticipation.com/users/2> users:email "user.two@mail.com" ;
+        users:name  "User Two" ;
+        sec:graphAccess <http://www.smartparticipation.com/graphPermission/1> ;
+        sec:graphAccess <http://www.smartparticipation.com/graphPermission/2> ;
+        sec:graphAccess <http://www.smartparticipation.com/graphPermission/3> ;
+        sec:graphAccess <http://www.smartparticipation.com/graphPermission/4> .
