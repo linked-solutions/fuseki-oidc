@@ -17,13 +17,18 @@
 
 package com.vdanyliuk.jena.auth;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHeaders;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.web.env.DefaultWebEnvironment;
 import org.apache.shiro.web.filter.PathConfigProcessor;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
-import org.apache.shiro.web.servlet.ShiroHttpSession;
 import org.apache.shiro.web.util.WebUtils;
 import org.keycloak.adapters.AdapterDeploymentContext;
 import org.keycloak.adapters.KeycloakDeployment;
@@ -36,13 +41,6 @@ import org.keycloak.adapters.spi.AuthChallenge;
 import org.keycloak.adapters.spi.AuthOutcome;
 import org.keycloak.adapters.spi.InMemorySessionIdMapper;
 import org.keycloak.adapters.spi.SessionIdMapper;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -127,6 +125,7 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter implement
 
     private AuthenticationToken getAuthenticationToken(OIDCServletHttpFacade facade) {
         String email = facade.getSecurityContext().getToken().getEmail();
+        Objects.requireNonNull(email, "Token must contain email clause.");
         String token = facade.getSecurityContext().getTokenString();
         return new JWTAuthToken(token, email);
     }

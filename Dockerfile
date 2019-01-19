@@ -8,8 +8,14 @@ ADD conf/shiro.ini /usr/local/fuseki/shiro.ini
 
 ENV FUSEKI_HOME=/usr/local/fuseki
 ENV FUSEKI_BASE=/usr/local/fuseki
+ENV JPDA_ADDRESS="15005"
+ENV JPDA_TRANSPORT=dt_socket
+ENV SERVER=y
+ENV JJPDA_SUSPEND=n
 
-CMD ["catalina.sh", "run"]
+RUN echo "172.17.0.1 docker.server.com" >> /etc/hosts
+
+CMD ["catalina.sh", "jpda", "run"]
 
 
 
