@@ -10,36 +10,31 @@
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix perm:    <http://apache.org/jena/permissions/Assembler#> .
 
-[] rdf:type fuseki:Server ;
-   # Example::
-   # Server-wide query timeout.
-   #
-   # Timeout - server-wide default: milliseconds.
-   # Format 1: "1000" -- 1 second timeout
-   # Format 2: "10000,60000" -- 10s timeout to first result,
-   #                            then 60s timeout for the rest of query.
-   #
-   # See javadoc for ARQ.queryTimeout for details.
-   # This can also be set on a per dataset basis in the dataset assembler.
-   #
-   # ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "30000" ] ;
+# TDB
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
-   # Add any custom classes you want to load.
-   # Must have a "public static void init()" method.
-   # ja:loadClass "your.code.Class" ;
-
-   # End triples.
-   .
+[] rdf:type fuseki:Server .
 
 [] ja:loadClass    "org.apache.jena.permissions.SecuredAssembler" .
     perm:Model       rdfs:subClassOf  ja:NamedModel .
 
-:baseModel rdf:type ja:MemoryModel.
+:baseDataset rdf:type tdb:DatasetTDB ;
+            tdb:location "/db" ;
+            tdb:unionDefaultGraph true ;
 
-:securedModel rdf:type perm:Model ;
-    perm:baseModel :baseModel ;
-    ja:modelName "https://example.org/securedModel" ;
-    perm:evaluatorImpl :secEvaluator .
+# Intermediate graph referencing the default union graph
+:unionGraph rdf:type tdb:GraphTDB ;
+   tdb:dataset :baseDataset ;
+   tdb:graphName <urn:x-arq:UnionGraph> ;
+
+# Inference model
+:infModel a ja:InfModel ;
+           ja:baseModel :unionGraph .
+
+# Inference dataset
+:infDataset rdf:type ja:RDFDataset ;
+            ja:defaultGraph :infModel ;
 
 :secEvaluator rdf:type perm:Evaluator ;
     perm:args [
@@ -47,8 +42,15 @@
     ] ;
     perm:evaluatorClass "com.vdanyliuk.jena.security.GraphSecurityEvaluator" .
 
+:securedModel rdf:type perm:Model ;
+    perm:baseModel :infModel ;
+    ja:modelName "https://example.org/securedModel" ;
+    perm:evaluatorImpl :secEvaluator .
+
 :securedDataset rdf:type ja:RDFDataset ;
    ja:defaultGraph :securedModel .
+
+
 
 <#service1> rdf:type fuseki:Service ;
     fuseki:name                       "ds" ;       # http://host:port/ds
