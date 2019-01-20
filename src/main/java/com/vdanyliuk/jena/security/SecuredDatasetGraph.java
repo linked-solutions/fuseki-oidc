@@ -20,13 +20,13 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.GraphZero;
 import org.apache.jena.sparql.util.Context;
 
-public class FullySecuredDatasetGraph implements DatasetGraph {
+public class SecuredDatasetGraph implements DatasetGraph {
 
     public static final String DEFAULT_GRAPH_SECURITY_NAME = "TEST";
     private DatasetGraph base;
     private SecurityEvaluator securityEvaluator;
 
-    protected FullySecuredDatasetGraph(DatasetGraph base, SecurityEvaluator securityEvaluator) {
+    protected SecuredDatasetGraph(DatasetGraph base, SecurityEvaluator securityEvaluator) {
         this.base = base;
         this.securityEvaluator = securityEvaluator;
     }
@@ -57,7 +57,7 @@ public class FullySecuredDatasetGraph implements DatasetGraph {
     public Graph getGraph(Node graphNode) {
         boolean isReadAllowed = hasReadAccess(graphNode);
         if (isReadAllowed) {
-            return base.getDefaultGraph();
+            return base.getGraph(graphNode);
         } else {
             return GraphZero.instance();
         }

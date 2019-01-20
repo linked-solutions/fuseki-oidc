@@ -20,18 +20,10 @@ package com.vdanyliuk.jena.security;
 
 import static org.apache.jena.permissions.AssemblerConstants.EVALUATOR_IMPL;
 import static org.apache.jena.permissions.AssemblerConstants.URI;
-import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.NS;
-import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pDefaultGraph;
-import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pGraph;
-import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pGraphAlt;
-import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pGraphName;
-import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
 import static org.apache.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getStringValue;
 import static org.apache.jena.tdb.assembler.VocabTDB.pLocation;
 import static org.apache.jena.tdb.assembler.VocabTDB.pUnionDefaultGraph;
-
-import java.util.List;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
@@ -40,24 +32,16 @@ import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.permissions.AssemblerConstants;
-import org.apache.jena.permissions.SecuredAssembler;
 import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluatorAssembler;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
-import org.apache.jena.sparql.core.assembler.DatasetAssemblerException;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.sparql.util.FmtUtils;
 import org.apache.jena.sparql.util.MappingRegistry;
-import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBFactory;
@@ -72,12 +56,7 @@ public class SecuredDatasetAssembler extends DatasetAssembler {
         init();
     }
 
-    /**
-     * Initialize the assembler.
-     * Registers the prefix "sec" with the uri http://apache.org/jena/permission/Assembler#
-     * and registers this assembler with the uri http://apache.org/jena/permission/Assembler#Model
-     */
-    static synchronized public void init() {
+    private static synchronized void init() {
         if (initialized)
             return;
         MappingRegistry.addPrefixMapping("sec", AssemblerConstants.URI);
@@ -90,7 +69,7 @@ public class SecuredDatasetAssembler extends DatasetAssembler {
      *
      * @param group The assembler group to register with.
      */
-    static void registerWith(AssemblerGroup group) {
+    private static void registerWith(AssemblerGroup group) {
         if (group == null)
             group = Assembler.general;
         group.implementWith(ResourceFactory.createProperty(URI + "SecuredDataset"), new SecuredDatasetAssembler());
@@ -116,7 +95,7 @@ public class SecuredDatasetAssembler extends DatasetAssembler {
         }
         SecurityEvaluator securityEvaluator = getEvaluatorImpl(a, evaluatorImpl);
 
-        dsg = new FullySecuredDatasetGraph(dsg, securityEvaluator);
+        dsg = new SecuredDatasetGraph(dsg, securityEvaluator);
 
         if (root.hasProperty(pUnionDefaultGraph)) {
             Node b = root.getProperty(pUnionDefaultGraph).getObject().asNode();
@@ -127,12 +106,6 @@ public class SecuredDatasetAssembler extends DatasetAssembler {
                 Log.warn(DatasetAssemblerTDB.class, "Failed to recognize value for union graph setting (ignored): " + b);
         }
 
-        /*
-        <r> rdf:type tdb:DatasetTDB ;
-            tdb:location "dir" ;
-            //ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
-            tdb:unionGraph true ; # or "true"
-        */
         AssemblerUtils.setContext(root, dsg.getContext());
         return DatasetFactory.wrap(dsg);
     }
