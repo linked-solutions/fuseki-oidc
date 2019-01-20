@@ -13,6 +13,8 @@ ENV JPDA_TRANSPORT=dt_socket
 ENV SERVER=y
 ENV JJPDA_SUSPEND=n
 
+RUN echo "172.17.0.1 docker.server.com" >> /etc/hosts
+
 CMD ["catalina.sh", "jpda", "run"]
 
 
