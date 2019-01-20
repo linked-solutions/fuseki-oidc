@@ -17,24 +17,13 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 [] rdf:type fuseki:Server .
 
 [] ja:loadClass    "org.apache.jena.permissions.SecuredAssembler" .
+[] ja:loadClass    "com.vdanyliuk.jena.security.SecuredDatasetAssembler" .
     perm:Model       rdfs:subClassOf  ja:NamedModel .
 
-:baseDataset rdf:type tdb:DatasetTDB ;
+:dataset rdf:type perm:SecuredDataset ;
             tdb:location "/db" ;
             tdb:unionDefaultGraph true ;
-
-# Intermediate graph referencing the default union graph
-:unionGraph rdf:type tdb:GraphTDB ;
-   tdb:dataset :baseDataset ;
-   tdb:graphName <urn:x-arq:UnionGraph> ;
-
-# Inference model
-:infModel a ja:InfModel ;
-           ja:baseModel :unionGraph .
-
-# Inference dataset
-:infDataset rdf:type ja:RDFDataset ;
-            ja:defaultGraph :infModel ;
+            perm:evaluatorImpl :secEvaluator .
 
 :secEvaluator rdf:type perm:Evaluator ;
     perm:args [
@@ -42,15 +31,8 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     ] ;
     perm:evaluatorClass "com.vdanyliuk.jena.security.GraphSecurityEvaluator" .
 
-:securedModel rdf:type perm:Model ;
-    perm:baseModel :infModel ;
-    ja:modelName "https://example.org/securedModel" ;
-    perm:evaluatorImpl :secEvaluator .
-
-:securedDataset rdf:type ja:RDFDataset ;
-   ja:defaultGraph :securedModel .
-
-
+:baseModel rdf:type ja:MemoryModel ;
+           ja:content [ja:externalContent <file:/sec_data.ttl> ] .
 
 <#service1> rdf:type fuseki:Service ;
     fuseki:name                       "ds" ;       # http://host:port/ds
@@ -61,4 +43,4 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     fuseki:serviceReadWriteGraphStore "data" ;     # SPARQL Graph store protocol (read and write)
     # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore      "get" ;      # SPARQL Graph store protocol (read only)
-    fuseki:dataset                   :securedDataset ;
+    fuseki:dataset                   :dataset ;

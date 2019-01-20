@@ -55,7 +55,7 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
      */
     @Override
     public boolean evaluate(Object principal, Action action, Node graphIRI, Triple triple) {
-        return true;
+        return false;
     }
 
 
@@ -75,7 +75,7 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
      */
     @Override
     public boolean evaluate(Object o, Set<Action> set, Node graphIRI, Triple triple) throws AuthenticationRequiredException {
-        return true;
+        return false;
     }
 
     @Override
@@ -94,7 +94,7 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
      */
     @Override
     public boolean evaluateAny(Object o, Set<Action> set, Node graphIRI, Triple triple) throws AuthenticationRequiredException {
-        return true;
+        return false;
     }
 
     /**
