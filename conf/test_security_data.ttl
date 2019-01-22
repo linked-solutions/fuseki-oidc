@@ -8,3 +8,4 @@
 
 
 <http://www.smartparticipation.com/users/admin> users:email "admin" ;
+        sec:graphAccess <http://www.smartparticipation.com/graphPermission/1> .

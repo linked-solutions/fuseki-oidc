@@ -23,15 +23,19 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 # Creates dataset that will be located in /db
 # and secured with secEvaluator
 :dataset rdf:type perm:SecuredDataset ;
-            tdb:location "/db" ;
-            perm:evaluatorImpl :secEvaluator .
+         tdb:location "/db" ;
+         perm:evaluatorImpl :secEvaluator ;
+         perm:securityBaseModel :model ;
+         perm:securityGraphName "http://www.smartparticipation.com/security" .
+
+:model a ja:MemoryModel ;
+    ja:content [ja:externalContent <file:/sec_data.ttl>] .
 
 # Creates security graph in dataset
 # and initializes with content
 :securityGraph rdf:type tdb:GraphTDB ;
     tdb:dataset :dataset ;
-    tdb:graphName <http://www.smartparticipation.com/security> ;
-    ja:content [ja:externalContent <file:/sec_data.ttl> ] .
+    tdb:graphName <http://www.smartparticipation.com/security> .
 
 # Creates security evaluator that will be using securityGraph
 # to check user's permissions
@@ -47,7 +51,6 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     fuseki:serviceQuery               "sparql" ;   # SPARQL query service
     fuseki:serviceQuery               "query" ;    # SPARQL query service (alt name)
     fuseki:serviceUpdate              "update" ;   # SPARQL update service
-    fuseki:serviceUpload              "upload" ;   # Non-SPARQL upload service
     fuseki:serviceReadWriteGraphStore "data" ;     # SPARQL Graph store protocol (read and write)
     # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore      "get" ;      # SPARQL Graph store protocol (read only)

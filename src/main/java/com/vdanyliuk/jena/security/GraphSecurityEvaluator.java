@@ -33,12 +33,10 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
                     "" +
                     "SELECT ?graph ?permission " +
                     "WHERE { " +
-                    "    graph <http://www.smartparticipation.com/security> { " +
                     "        ?u users:email ?email ." +
                     "        ?u sec:graphAccess ?ga .\n" +
                     "        ?ga graphs:graph ?graph ;" +
                     "            sec:accessType ?permission" +
-                    "    }" +
                     "} ";
 
     private static final AntPathMatcher MATCHER = new AntPathMatcher();

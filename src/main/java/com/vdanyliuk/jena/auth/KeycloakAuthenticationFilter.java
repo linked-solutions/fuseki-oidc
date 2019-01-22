@@ -73,7 +73,7 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter implement
 
     private boolean isNotBasicAuth(ServletRequest request) {
         String authHeader = ((HttpServletRequest) request).getHeader(HttpHeaders.AUTHORIZATION);
-        return !authHeader.trim().toLowerCase().startsWith("basic");
+        return authHeader == null || !authHeader.trim().toLowerCase().startsWith("basic");
     }
 
     @Override

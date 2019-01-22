@@ -16,6 +16,6 @@ public class JWTBypassingBasicHttpAuthenticationFilter extends BasicHttpAuthenti
 
     private boolean isNotBearerAuth(ServletRequest request) {
         String authHeader = ((HttpServletRequest) request).getHeader(HttpHeaders.AUTHORIZATION);
-        return !authHeader.trim().toLowerCase().startsWith("bearer");
+        return authHeader == null || !authHeader.trim().toLowerCase().startsWith("bearer");
     }
 }
