@@ -21,7 +21,7 @@ import org.apache.jena.sparql.util.Context;
 
 public class SecuredDatasetGraph implements DatasetGraph {
 
-    public static final String DEFAULT_GRAPH_SECURITY_NAME = "TEST";
+    public static final String DEFAULT_GRAPH_SECURITY_NAME = "DEFAULT";
     private DatasetGraph base;
     private SecurityEvaluator securityEvaluator;
 

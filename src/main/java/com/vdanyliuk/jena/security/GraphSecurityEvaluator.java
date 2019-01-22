@@ -16,7 +16,6 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -55,8 +54,7 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
     @Override
     @Cacheable
     public boolean evaluate(Object o, Action action, Node graphIRI) throws AuthenticationRequiredException {
-        boolean result = hasAccess((Subject) o, (Node_URI) graphIRI, action);
-        return result;
+        return hasAccess((Subject) o, (Node_URI) graphIRI, action);
     }
 
     /**
