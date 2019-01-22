@@ -7,7 +7,7 @@ RUN cd sources && mvn -DskipTests=true package
 RUN mkdir /app && cp /sources/target/fuseki-oauth-security-1.0-SNAPSHOT.jar /app/server.jar
 RUN mkdir /usr/local/fuseki && cp -r /sources/target/webapp /usr/local/fuseki/webapp
 
-ADD conf/test_security_data.ttl /sec_data.ttl
+ADD conf/admin_security_data.ttl /sec_data.ttl
 ADD conf /usr/local/fuseki
 
 ENV FUSEKI_HOME=/usr/local/fuseki

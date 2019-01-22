@@ -1,6 +1,10 @@
 package com.vdanyliuk.jena.security;
 
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 import com.jcabi.aspects.Cacheable;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +21,15 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.sparql.core.NamedGraph;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.AntPathMatcher;
 
 @Slf4j
 public class GraphSecurityEvaluator implements SecurityEvaluator {
+
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private static final String OWN_GRAPH_PREFIX = "http://www.smartparticipation.com/graphs/users/";
 
@@ -149,10 +156,32 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
             log.debug("Principal: " + email + "\tAction: " + action + "\tNode:" + graphIRI + "\tAuthorized for own graph");
             return true;
         } else {
-            boolean result = checkOtherGraphs(graphIRI, action, email);
+            boolean result = isSecurityGraph(graphIRI) ?
+                    inOtherThread(() -> checkOtherGraphs(graphIRI, action, email)) :
+                    checkOtherGraphs(graphIRI, action, email);
             log.debug("Principal: " + email + "\tAction: " + action + "\tNode:" + graphIRI + "\tAuthorized: " + result);
             return result;
         }
+    }
+
+    private boolean isSecurityGraph(Node_URI graphIRI) {
+        return ((NamedGraph)securityModel.getGraph()).getGraphName().equals(graphIRI);
+    }
+
+    // This terrible hack is needed to bypass Jena transactions system
+    // When write transaction is active for this graph
+    // in the current thread any query returns empty result set
+    // but it works from another thread.
+    // This is the problem only for writes into security graph
+    private boolean inOtherThread(Supplier<Boolean> checkOtherGraphs) {
+        try {
+            return executorService.submit(() -> securityModel.calculateInTxn(checkOtherGraphs)).get();
+        } catch (InterruptedException e) {
+            //ignore
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e.getCause());
+        }
+        return false;
     }
 
     private boolean isOwnGraph(String email, Node_URI graphIRI) {
@@ -160,22 +189,24 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
         return ownGraphURI.equals(graphIRI.getURI());
     }
 
+    @Cacheable
     private boolean checkOtherGraphs(Node_URI graphIRI, Action action, String email) {
         ParameterizedSparqlString queryString = new ParameterizedSparqlString(ONE_ACTION_QUERY);
         queryString.setLiteral("email", email);
         Query query = QueryFactory.create(queryString.toString());
 
-        QueryExecution queryExecution = QueryExecutionFactory.create(query, securityModel);
-        ResultSet resultSet = queryExecution.execSelect();
-        while (resultSet.hasNext()) {
-            QuerySolution solution = resultSet.next();
-            String graph = solution.get("graph").asLiteral().getString();
-            String permission = solution.get("permission").asLiteral().getString();
-            if (grantsAccess(graph, permission, graphIRI, action)) {
-                return true;
+        try(QueryExecution queryExecution = QueryExecutionFactory.create(query, securityModel)) {
+            ResultSet resultSet = queryExecution.execSelect();
+            while (resultSet.hasNext()) {
+                QuerySolution solution = resultSet.next();
+                String graph = solution.get("graph").asLiteral().getString();
+                String permission = solution.get("permission").asLiteral().getString();
+                if (grantsAccess(graph, permission, graphIRI, action)) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
     }
 
     private boolean grantsAccess(String graphPattern, String permission, Node_URI graphIRI, Action action) {
