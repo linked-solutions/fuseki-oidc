@@ -40,8 +40,10 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
                     "" +
                     "SELECT ?graph ?permission " +
                     "WHERE { " +
-                    "        ?u users:email ?email ." +
-                    "        ?u sec:graphAccess ?ga .\n" +
+                    "        {?u users:email ?email ;" +
+                    "            sec:graphAccess ?ga ." +
+                    "        } UNION  " +
+                    "        {<http://www.smartparticipation.com/users/**> sec:graphAccess ?ga .}" +
                     "        ?ga graphs:graph ?graph ;" +
                     "            sec:accessType ?permission" +
                     "} ";

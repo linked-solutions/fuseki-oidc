@@ -23,6 +23,7 @@ import org.apache.jena.mem.GraphMem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.impl.ModelCom;
+import org.apache.jena.sparql.core.NamedGraphWrapper;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
 import org.apache.shiro.util.ThreadState;
@@ -36,7 +37,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Authenticated user test")
 class GraphSecurityEvaluatorTest {
@@ -44,6 +44,7 @@ class GraphSecurityEvaluatorTest {
     private static final String GRAPH_ONE = "http://www.smartparticipation.com/graphs/1";
     private static final Node GRAPH_ONE_URI = NodeFactory.createURI(GRAPH_ONE);
     private static final String GRAPH_TWO = "http://www.smartparticipation.com/graphs/2";
+    private static final String GRAPH_THREE = "http://www.smartparticipation.com/graphs/3";
     private static final String GRAPH_UNKNOWN = "http://some.other.graph/to/test";
 
     private static final String GRAPH_OWN_USER_ONE = "http://www.smartparticipation.com/graphs/users/user.one@mail.com";
@@ -64,7 +65,8 @@ class GraphSecurityEvaluatorTest {
         threadState.bind();
 
         //Create security graph
-        GraphMem securityGraph = new GraphMem();
+        GraphMem memoryGraph = new GraphMem();
+        NamedGraphWrapper securityGraph = new NamedGraphWrapper(NodeFactory.createURI("http://www.smartparticipation.com/security"), memoryGraph);
         Model securityModel = new ModelCom(securityGraph);
         securityModel.read(Objects.requireNonNull(getClass().getClassLoader().getResource("test_security_data.ttl")).toString());
 
@@ -199,6 +201,13 @@ class GraphSecurityEvaluatorTest {
             "user.five@mail.com, Create,   " + GRAPH_OWN_USER_THREE + ", true",
             "user.five@mail.com, Create,   " + GRAPH_OWN_USER_FOUR + ", true",
             "user.five@mail.com, Create,   " + GRAPH_OWN_USER_FIVE + ", true",
+
+            "user.one@mail.com, Read,   " + GRAPH_THREE + ", true",
+            "user.two@mail.com, Read,   " + GRAPH_THREE + ", true",
+            "user.three@mail.com, Read,   " + GRAPH_THREE + ", true",
+            "user.four@mail.com, Read,   " + GRAPH_THREE + ", true",
+            "any@mail.com, Read,   " + GRAPH_THREE + ", true",
+            "some@mail.com, Read,   " + GRAPH_THREE + ", true",
 
     })
     void accessToGraphs(String email, SecurityEvaluator.Action action, String graph, Boolean permitted) {
