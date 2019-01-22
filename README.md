@@ -1,49 +1,45 @@
 ## To build application you will need:
-* JDK 8 or higher installed 
-* Maven 3.5 or higher installed
 * Docker
 
 ### Building
-Put firebase-config.json file into src/main/resources directory. You can get this file there: https://console.cloud.google.com/iam-admin/serviceaccounts
-To build an app run `mvn clean package`
-To dockerize an app run `docker build -t org:fuseki-server .` after application is built with maven
+Put appropriate configs into src/main/resources/keycloack.json.
+Most probably you will need to change just top 3 of them. 
+It's important to have `auth-server-url` that matches url that end users will see during login, 
+as system checks issuer of the token to ensure that server is not changed.
+Additional information about [keycloak](https://www.keycloak.org/).   
+
+In conf/shiro.ini you can find section `[users]` that contains one admin user with password.
+You will need to change the password to more secure. 
+Only this one user will be able to login with Basic auth. 
+Security graph is prepopulated with the data that allows access to every graph for this user 
+so do not change the name, just password.   
+
+To build an image run `docker build -t smartparticipation:fuseki-server .`. Tag is optional
 
 ### Running
-To run docker image `docker run -it --rm -p 8080:8080 org:fuseki-server`
-you can access server at http://localhost:8080/fuseki
+To run docker image `docker run -it --rm -p 8080:8080 smartparticipation:fuseki-server`
+you can access server at http://localhost:8080/
 
 ## Accessing
-Any request to the fuseki server should contain the next header
-`Authorization: Bearer <firebase token value>`
+Any request to the fuseki server should contain the next header. 
+(Except for admin user that can be authenticated with basic auth)
+`Authorization: Bearer <keycloak access token value>`
 
-To check if everything works you can:
-* put some data into fuseki with request
-```http request
-POST http://localhost:8080/fuseki/ds
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImIzMmIyNzViNDBhOWFjNGU1ZmQ0NTFhZTUxMDE4ZThlOTgxMmViNDYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYW8yLWRldi1maXJlYmFzZSIsIm9yZ2FuaXphdGlvbiI6InJlZmFjdG9yZWQtc3ViIiwiZW1haWwiOiJhbzIudXNlcjFAZ21haWwuY29tIiwiYXVkIjoiYW8yLWRldi1maXJlYmFzZSIsImF1dGhfdGltZSI6MTU0NTkwMjE2NywidXNlcl9pZCI6IjU2NDA4Njg3ODI0MDc2ODAiLCJzdWIiOiI1NjQwODY4NzgyNDA3NjgwIiwiaWF0IjoxNTQ1OTAyMTY3LCJleHAiOjE1NDU5MDU3NjcsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnt9LCJzaWduX2luX3Byb3ZpZGVyIjoiY3VzdG9tIn19.fW3d-RLiYW89XY2vD5-hS2XNzP6BgQLOV3MutIyUFOabLGIxAjebMcGOywjuYf7S1lRyHqasX0fLtWbM54t3gn9M_3tImr_B3zg2GQrzOQklYv65fGk_V9jjWJ2b6qAKjPSc1Mjn4wz5gcEIfPD08DbwSlTDjFnQVRcP5uYvpttDnJdfcUCRW8-qrNvDGKFk5HIxiwIovw2WdSPchHFNfOZBpIMDS61P5avBI9H4XG6PnCYK_jkikAYIFLSkqD0BoiLjbEzmwyT4N7ZQkefVN6BaPBUfkEuCcy8GYsWQCyTf5CMNsQXhhtZGk1ILH2GPcAraYOcEeoG9MNx22OpIwg
-Content-Type: application/sparql-update
-
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
-INSERT DATA {
-    <http://example/book3>
-        dc:title    "A new book" ;
-        dc:creator  "Some Writer" .
-}
-```
-* get data with request
-```http request
-POST http://localhost:8080/fuseki/ds
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImIzMmIyNzViNDBhOWFjNGU1ZmQ0NTFhZTUxMDE4ZThlOTgxMmViNDYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYW8yLWRldi1maXJlYmFzZSIsIm9yZ2FuaXphdGlvbiI6InJlZmFjdG9yZWQtc3ViIiwiZW1haWwiOiJhbzIudXNlcjFAZ21haWwuY29tIiwiYXVkIjoiYW8yLWRldi1maXJlYmFzZSIsImF1dGhfdGltZSI6MTU0NTkwMjE2NywidXNlcl9pZCI6IjU2NDA4Njg3ODI0MDc2ODAiLCJzdWIiOiI1NjQwODY4NzgyNDA3NjgwIiwiaWF0IjoxNTQ1OTAyMTY3LCJleHAiOjE1NDU5MDU3NjcsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnt9LCJzaWduX2luX3Byb3ZpZGVyIjoiY3VzdG9tIn19.fW3d-RLiYW89XY2vD5-hS2XNzP6BgQLOV3MutIyUFOabLGIxAjebMcGOywjuYf7S1lRyHqasX0fLtWbM54t3gn9M_3tImr_B3zg2GQrzOQklYv65fGk_V9jjWJ2b6qAKjPSc1Mjn4wz5gcEIfPD08DbwSlTDjFnQVRcP5uYvpttDnJdfcUCRW8-qrNvDGKFk5HIxiwIovw2WdSPchHFNfOZBpIMDS61P5avBI9H4XG6PnCYK_jkikAYIFLSkqD0BoiLjbEzmwyT4N7ZQkefVN6BaPBUfkEuCcy8GYsWQCyTf5CMNsQXhhtZGk1ILH2GPcAraYOcEeoG9MNx22OpIwg
-Content-Type: application/sparql-query
-Accept: application/ld+json
-
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
-CONSTRUCT {
-   ?p dc:title ?t ;
-      dc:creator ?c .
-}
-WHERE {
-    ?p dc:title ?t .
-    ?p dc:creator ?c .
-}
-```
+## Security configuration
+There is one predefined security graph: `<http://www.smartparticipation.com/security>` 
+It will contain information about user access to the other graphs. 
+There are just two classes:
+* User that have properties:
+   * `<http://www.smartparticipation.com/users#email>` as email
+   (for admin it's not email actually to distinguish it from other users)
+   * `<http://www.smartparticipation.com/security#graphAccess>` Uri of GraphAccess instance
+   There can be arbitrary count of graphAccess properties for a user
+* GraphAccess that have properties
+   * `<http://www.smartparticipation.com/graphs#graph>` Graph name. String literal that can use Ant wildcards. (see details [here](http://ant.apache.org/manual/dirtasks.html#patterns))
+   * `<http://www.smartparticipation.com/graphs#accessType>` String literal that can take next values : 
+      * READ
+      * WRITE (is a group of the next ones)
+      * CREATE
+      * DELETE
+      * UPDATE
+      
