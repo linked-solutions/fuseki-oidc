@@ -20,12 +20,14 @@ package com.vdanyliuk.jena.auth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHeaders;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.PathConfigProcessor;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
@@ -62,6 +64,16 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter implement
      */
     public KeycloakAuthenticationFilter() throws IOException {
         onFilterConfigSet();
+    }
+
+    @Override
+    protected boolean isEnabled(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+        return super.isEnabled(request, response) && isNotBasicAuth(request);
+    }
+
+    private boolean isNotBasicAuth(ServletRequest request) {
+        String authHeader = ((HttpServletRequest) request).getHeader(HttpHeaders.AUTHORIZATION);
+        return !authHeader.trim().toLowerCase().startsWith("basic");
     }
 
     @Override

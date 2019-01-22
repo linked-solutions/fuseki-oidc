@@ -6,7 +6,7 @@
 @prefix fuseki:  <http://jena.apache.org/fuseki#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix tdb:     <http://jena.apache.org/2016/tdb#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix perm:    <http://apache.org/jena/permissions/Assembler#> .
 
@@ -20,28 +20,20 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 [] ja:loadClass    "com.vdanyliuk.jena.security.SecuredDatasetAssembler" .
     perm:Model       rdfs:subClassOf  ja:NamedModel .
 
-# Creates dataset that will be located in /db
-# and secured with secEvaluator
 :dataset rdf:type perm:SecuredDataset ;
-            tdb:location "/db" ;
+            tdb:location "target/db" ;
+            tdb:unionDefaultGraph true ;
             perm:evaluatorImpl :secEvaluator .
 
-# Creates security graph in dataset
-# and initializes with content
-:securityGraph rdf:type tdb:GraphTDB ;
-    tdb:dataset :dataset ;
-    tdb:graphName <http://www.smartparticipation.com/security> ;
-    ja:content [ja:externalContent <file:/sec_data.ttl> ] .
-
-# Creates security evaluator that will be using securityGraph
-# to check user's permissions
 :secEvaluator rdf:type perm:Evaluator ;
     perm:args [
-        rdf:_1 :securityGraph ;
+        rdf:_1 :baseModel ;
     ] ;
     perm:evaluatorClass "com.vdanyliuk.jena.security.GraphSecurityEvaluator" .
 
-# Creates service to serve RDF data through HTTP
+:baseModel rdf:type ja:MemoryModel ;
+           ja:content [ja:externalContent <file:/sec_data.ttl> ] .
+
 <#service1> rdf:type fuseki:Service ;
     fuseki:name                       "ds" ;       # http://host:port/ds
     fuseki:serviceQuery               "sparql" ;   # SPARQL query service

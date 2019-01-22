@@ -30,6 +30,7 @@ import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerGroup;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.graph.Node;
 import org.apache.jena.permissions.AssemblerConstants;
 import org.apache.jena.permissions.SecurityEvaluator;
@@ -46,7 +47,9 @@ import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb.assembler.DatasetAssemblerTDB;
-import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb2.DatabaseMgr;
+import org.apache.jena.tdb2.TDB2;
+import org.apache.jena.tdb2.assembler.VocabTDB2;
 
 public class SecuredDatasetAssembler extends DatasetAssembler {
     private static boolean initialized;
@@ -81,12 +84,21 @@ public class SecuredDatasetAssembler extends DatasetAssembler {
     }
 
     private static Dataset make(Assembler a, Resource root) {
-        if (!exactlyOneProperty(root, pLocation))
-            throw new AssemblerException(root, "No location given");
+        if ( !exactlyOneProperty(root, VocabTDB2.pLocation) )
+            throw new AssemblerException(root, "No location given") ;
 
-        String dir = getStringValue(root, pLocation);
-        Location loc = Location.create(dir);
-        DatasetGraph dsg = TDBFactory.createDatasetGraph(loc);
+        String dir = getStringValue(root, VocabTDB2.pLocation) ;
+        org.apache.jena.dboe.base.file.Location loc = Location.create(dir) ;
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(loc) ;
+
+        if ( root.hasProperty(VocabTDB2.pUnionDefaultGraph) ) {
+            Node b = root.getProperty(VocabTDB2.pUnionDefaultGraph).getObject().asNode() ;
+            NodeValue nv = NodeValue.makeNode(b) ;
+            if ( nv.isBoolean() )
+                dsg.getContext().set(TDB2.symUnionDefaultGraph, nv.getBoolean()) ;
+            else
+                Log.warn(org.apache.jena.tdb2.assembler.DatasetAssemblerTDB.class, "Failed to recognize value for union graph setting (ignored): " + b) ;
+        }
 
         Resource evaluatorImpl = getUniqueResource(root, EVALUATOR_IMPL);
         if (evaluatorImpl == null) {

@@ -1,7 +1,11 @@
-FROM tomcat:9-jre8
+FROM maven:3.6-jdk-8
 
-ADD bin /usr/local/tomcat/webapps/fuseki
-ADD target/fuseki-oauth-security-1.0-SNAPSHOT.jar /usr/local/tomcat/webapps/fuseki/WEB-INF/lib/jwt-auth.jar
+ADD src /sources/src
+ADD pom.xml /sources/pom.xml
+
+RUN cd sources && mvn -DskipTests=true package
+RUN mkdir /app && cp /sources/target/fuseki-oauth-security-1.0-SNAPSHOT.jar /app/server.jar
+RUN mkdir /usr/local/fuseki && cp -r /sources/target/webapp /usr/local/fuseki/webapp
 
 ADD conf/test_security_data.ttl /sec_data.ttl
 ADD conf /usr/local/fuseki
@@ -13,9 +17,7 @@ ENV JPDA_TRANSPORT=dt_socket
 ENV SERVER=y
 ENV JJPDA_SUSPEND=n
 
-RUN echo "172.17.0.1 docker.server.com" >> /etc/hosts
-
-CMD ["catalina.sh", "jpda", "run"]
+CMD ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=15005", "-jar", "/app/server.jar"]
 
 
 

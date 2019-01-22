@@ -6,9 +6,9 @@
                                                       sec:accessType "READ" .
 <http://www.smartparticipation.com/graphPermission/2> graphs:graph "http://www.smartparticipation.com/graphs/1" ;
                                                       sec:accessType "WRITE" .
-<http://www.smartparticipation.com/graphPermission/3> graphs:graph "http://www.smartparticipation.com/graphs/*" ;
+<http://www.smartparticipation.com/graphPermission/3> graphs:graph "http://www.smartparticipation.com/graphs/**" ;
                                                       sec:accessType "READ" .
-<http://www.smartparticipation.com/graphPermission/4> graphs:graph "http://www.smartparticipation.com/graphs/*" ;
+<http://www.smartparticipation.com/graphPermission/4> graphs:graph "http://www.smartparticipation.com/graphs/**" ;
                                                       sec:accessType "READ" ;
                                                       sec:accessType "WRITE" .
 <http://www.smartparticipation.com/graphPermission/5> graphs:graph "**" ;

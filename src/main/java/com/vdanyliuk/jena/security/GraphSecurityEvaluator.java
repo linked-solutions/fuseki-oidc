@@ -12,26 +12,39 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.AntPathMatcher;
 
 @Slf4j
 public class GraphSecurityEvaluator implements SecurityEvaluator {
 
-    public static final String ONE_ACTION_QUERY =
+    private static final String OWN_GRAPH_PREFIX = "http://www.smartparticipation.com/graphs/users/";
+
+    private static final String ONE_ACTION_QUERY =
             "prefix sec: <http://www.smartparticipation.com/security#> " +
                     "prefix users: <http://www.smartparticipation.com/users#> " +
                     "prefix graphs: <http://www.smartparticipation.com/graphs#> " +
                     "" +
-                    "ASK { " +
-                    "?u users:email ?email ." +
-                    "    ?u sec:graphAccess ?ga .\n" +
-                    "    ?ga graphs:graph ?graph ;" +
-                    "        sec:accessType ?permission" +
+                    "SELECT ?graph ?permission " +
+                    "WHERE { " +
+                    "    graph <http://www.smartparticipation.com/security> { " +
+                    "        ?u users:email ?email ." +
+                    "        ?u sec:graphAccess ?ga .\n" +
+                    "        ?ga graphs:graph ?graph ;" +
+                    "            sec:accessType ?permission" +
+                    "    }" +
                     "} ";
+
+    private static final AntPathMatcher MATCHER = new AntPathMatcher();
+
     private Model securityModel;
+
 
 
     public GraphSecurityEvaluator(Model securityModel) {
@@ -133,14 +146,58 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
     }
 
     private boolean hasAccess(Subject subject, Node_URI graphIRI, Action action) {
+        String email = subject.getPrincipal().toString();
+        if (isOwnGraph(email, graphIRI)) {
+            return true;
+        } else {
+            return checkOtherGraphs(graphIRI, action, email);
+        }
+    }
+
+    private boolean isOwnGraph(String email, Node_URI graphIRI) {
+        String ownGraphURI = OWN_GRAPH_PREFIX + email;
+        return ownGraphURI.equals(graphIRI.getURI());
+    }
+
+    private boolean checkOtherGraphs(Node_URI graphIRI, Action action, String email) {
         ParameterizedSparqlString queryString = new ParameterizedSparqlString(ONE_ACTION_QUERY);
-        queryString.setLiteral("email", subject.getPrincipal().toString());
-        queryString.setIri("graph", graphIRI.getURI());
-        queryString.setLiteral("permission", action.toString().toUpperCase());
+        queryString.setLiteral("email", email);
         Query query = QueryFactory.create(queryString.toString());
 
         QueryExecution queryExecution = QueryExecutionFactory.create(query, securityModel);
-        return queryExecution.execAsk();
+        ResultSet resultSet = queryExecution.execSelect();
+        while (resultSet.hasNext()) {
+            QuerySolution solution = resultSet.next();
+            String graph = solution.get("graph").asLiteral().getString();
+            String permission = solution.get("permission").asLiteral().getString();
+            if (grantsAccess(graph, permission, graphIRI, action)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean grantsAccess(String graphPattern, String permission, Node_URI graphIRI, Action action) {
+        return MATCHER.match(graphPattern, graphIRI.getURI()) &&
+                permissionMatches(permission, action);
+    }
+
+    private boolean permissionMatches(String permission, Action action) {
+        switch (permission.toUpperCase()) {
+            case "READ" :
+                return Action.Read.equals(action);
+            case "CREATE" :
+                return Action.Create.equals(action);
+            case "DELETE" :
+                return Action.Delete.equals(action);
+            case "UPDATE" :
+                return Action.Update.equals(action);
+            case "WRITE" :
+                return Action.Create.equals(action) ||
+                    Action.Delete.equals(action) ||
+                    Action.Update.equals(action);
+            default: return false;
+        }
     }
 
 

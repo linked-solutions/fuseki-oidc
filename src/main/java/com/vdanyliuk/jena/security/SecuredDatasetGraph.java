@@ -13,7 +13,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.shared.AccessDeniedException;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -197,7 +196,7 @@ public class SecuredDatasetGraph implements DatasetGraph {
                 return base.find(g, s, p, o);
             }
         }
-        throw new AccessDeniedException("User is not allowed to delete triples from graph " + g);
+        throw new AccessDeniedException("User is not allowed to read triples from graph " + g);
     }
 
     @Override
@@ -213,7 +212,7 @@ public class SecuredDatasetGraph implements DatasetGraph {
                 return base.findNG(g, s, p, o);
             }
         }
-        throw new AccessDeniedException("User is not allowed to delete triples from graph " + g);
+        throw new AccessDeniedException("User is not allowed to read triples from graph " + g);
     }
 
     @Override
