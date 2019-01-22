@@ -2,6 +2,7 @@ package com.vdanyliuk.jena.security;
 
 import java.util.Set;
 
+import com.jcabi.aspects.Cacheable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_URI;
@@ -52,9 +53,10 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
 
 
     @Override
+    @Cacheable
     public boolean evaluate(Object o, Action action, Node graphIRI) throws AuthenticationRequiredException {
-        log.info("Object: " + o + "\nAction: " + action + "\nNode:" + graphIRI);
-        return hasAccess((Subject) o, (Node_URI) graphIRI, action);
+        boolean result = hasAccess((Subject) o, (Node_URI) graphIRI, action);
+        return result;
     }
 
     /**
@@ -71,8 +73,8 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
 
 
     @Override
+    @Cacheable
     public boolean evaluate(Object o, Set<Action> set, Node graphIRI) throws AuthenticationRequiredException {
-        log.info("Object: " + o + "\nAction: " + set + "\nNode:" + graphIRI);
         return set.stream()
                 .allMatch(action -> hasAccess((Subject) o, (Node_URI) graphIRI, action));
     }
@@ -90,8 +92,8 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
     }
 
     @Override
+    @Cacheable
     public boolean evaluateAny(Object o, Set<Action> set, Node graphIRI) throws AuthenticationRequiredException {
-        log.info("Object: " + o + "\nAction: " + set + "\nNode:" + graphIRI);
         return set.stream()
                 .anyMatch(action -> hasAccess((Subject) o, (Node_URI) graphIRI, action));
     }
@@ -126,7 +128,7 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
     @Override
     public Object getPrincipal() {
         Subject subject = SecurityUtils.getSubject();
-        log.info("Principal: " + subject);
+        log.debug("Principal: " + subject);
         return subject;
     }
 
@@ -136,19 +138,22 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
     @Override
     public boolean isPrincipalAuthenticated(Object principal) {
         if (principal instanceof Subject) {
-            log.info("Principal authenticated");
+            log.debug("Principal authenticated");
             return ((Subject)principal).isAuthenticated();
         }
-        log.info("Principal NOT authenticated");
+        log.debug("Principal NOT authenticated");
         return false;
     }
 
     private boolean hasAccess(Subject subject, Node_URI graphIRI, Action action) {
         String email = subject.getPrincipal().toString();
         if (isOwnGraph(email, graphIRI)) {
+            log.debug("Principal: " + email + "\tAction: " + action + "\tNode:" + graphIRI + "\tAuthorized for own graph");
             return true;
         } else {
-            return checkOtherGraphs(graphIRI, action, email);
+            boolean result = checkOtherGraphs(graphIRI, action, email);
+            log.debug("Principal: " + email + "\tAction: " + action + "\tNode:" + graphIRI + "\tAuthorized: " + result);
+            return result;
         }
     }
 
