@@ -7,7 +7,7 @@ Most probably you will need to change just top 3 of them.
 It's __IMPORTANT__  to have `auth-server-url` that matches url that end users will see during login, 
 as system checks issuer of the token to ensure that server is not changed.
 So if running in local docker you will need to add ip of Keycloak server to /etc/hosts. 
-Parameter --add-host=ip:hostname can be used on container start. Currently keycloak.json contains 
+Parameter --add-host=ip:hostname can be used on container start.
 Same host should be used when logging in through browser so it also should be added to local hosts file
 Also keep in mind ports redirecting - ports should be also the same from Fuseki container perspective and your browser perspective 
 
@@ -20,8 +20,9 @@ so do not change the name, just password.
 To build an image run `docker build -t smartparticipation:fuseki-server .`. Tag is optional
 
 ### Running
-To run docker image `docker run -it --rm -p 8080:3030 smartparticipation:fuseki-server`
-you can access server at http://localhost:8080/
+To run docker image `docker run -it --add-host=172.17.0.2:docker.server.com -p 9090:3030 smartparticipation:fuseki-server`
+the Ip 172.17.0.2 should be replaced with actual ip of Keycloak container
+you can access server at http://localhost:9090/
 
 ## Accessing
 Any request to the fuseki server should contain the next header. 
@@ -48,7 +49,7 @@ There are just two classes:
       
 ## Keycloak setup
 * Get the last docker image jboss/keycloak
-* Run with `docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 6060:8080 jboss/keycloak`   
+* Run with `docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8080:8080 jboss/keycloak`   
   username and password can be changed off course 
 * Go to localhost:6060/auth, login admin with credentials
 * Open "Realm Settings" -> "Tokens" and setup default signature to RS-256
