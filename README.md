@@ -4,9 +4,12 @@
 ### Building
 Put appropriate configs into src/main/resources/keycloack.json.
 Most probably you will need to change just top 3 of them. 
-It's important to have `auth-server-url` that matches url that end users will see during login, 
+It's __IMPORTANT__  to have `auth-server-url` that matches url that end users will see during login, 
 as system checks issuer of the token to ensure that server is not changed.
-Additional information about [keycloak](https://www.keycloak.org/).   
+So if running in local docker you will need to add ip of Keycloak server to /etc/hosts. 
+Parameter --add-host=ip:hostname can be used on container start. Currently keycloak.json contains 
+Same host should be used when logging in through browser so it also should be added to local hosts file
+Also keep in mind ports redirecting - ports should be also the same from Fuseki container perspective and your browser perspective 
 
 In conf/shiro.ini you can find section `[users]` that contains one admin user with password.
 You will need to change the password to more secure. 
@@ -17,7 +20,7 @@ so do not change the name, just password.
 To build an image run `docker build -t smartparticipation:fuseki-server .`. Tag is optional
 
 ### Running
-To run docker image `docker run -it --rm -p 8080:8080 smartparticipation:fuseki-server`
+To run docker image `docker run -it --rm -p 8080:3030 smartparticipation:fuseki-server`
 you can access server at http://localhost:8080/
 
 ## Accessing
@@ -43,3 +46,17 @@ There are just two classes:
       * DELETE
       * UPDATE
       
+## Keycloak setup
+* Get the last docker image jboss/keycloak
+* Run with `docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 6060:8080 jboss/keycloak`   
+  username and password can be changed off course 
+* Go to localhost:6060/auth, login admin with credentials
+* Open "Realm Settings" -> "Tokens" and setup default signature to RS-256
+* Setup own users login/signup in "Realm Settings" -> "Login" 
+  or just add any identity provider in "Identity Providers" page   
+  _IMPORTANT_ you need to include `email` into "Default Scopes" of an identity provider
+* setup new client for frontend, set name and url. 
+  After it created add an email mapper in "Mappers" tab using "Add Builtin" button
+* Library for frontend interaction with Keycloak can be found [here](https://www.npmjs.com/package/keycloak-js)
+
+Additional information about [keycloak](https://www.keycloak.org/).  
