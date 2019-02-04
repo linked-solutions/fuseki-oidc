@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.vdanyliuk.jena.security;
+package solutions.linked.jena.security;
 
 import static org.apache.jena.permissions.AssemblerConstants.EVALUATOR_IMPL;
 import static org.apache.jena.permissions.AssemblerConstants.URI;
@@ -26,7 +26,6 @@ import static org.apache.jena.tdb.assembler.VocabTDB.pUnionDefaultGraph;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.JA;
 import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerGroup;
 import org.apache.jena.assembler.exceptions.AssemblerException;

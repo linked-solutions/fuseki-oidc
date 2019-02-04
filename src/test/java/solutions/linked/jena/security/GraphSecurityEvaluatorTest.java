@@ -1,4 +1,4 @@
-package com.vdanyliuk.jena.security;
+package solutions.linked.jena.security;
 
 import static org.apache.jena.permissions.SecurityEvaluator.Action.Create;
 import static org.apache.jena.permissions.SecurityEvaluator.Action.Delete;
@@ -28,7 +28,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
 import org.apache.shiro.util.ThreadState;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

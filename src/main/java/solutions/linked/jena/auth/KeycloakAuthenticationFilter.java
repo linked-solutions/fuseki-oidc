@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.vdanyliuk.jena.auth;
+package solutions.linked.jena.auth;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package com.vdanyliuk.jena.auth;
+package solutions.linked.jena.auth;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

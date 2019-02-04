@@ -1,4 +1,4 @@
-package com.vdanyliuk.jena.auth;
+package solutions.linked.jena.auth;
 
 import java.io.IOException;
 import javax.servlet.ServletOutputStream;

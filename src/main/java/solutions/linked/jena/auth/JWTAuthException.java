@@ -1,4 +1,4 @@
-package com.vdanyliuk.jena.auth;
+package solutions.linked.jena.auth;
 
 import org.apache.shiro.authc.AuthenticationException;
 

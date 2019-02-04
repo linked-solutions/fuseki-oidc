@@ -1,4 +1,4 @@
-package com.vdanyliuk.jena.security;
+package solutions.linked.jena.security;
 
 import java.util.Set;
 import java.util.concurrent.ExecutionException;

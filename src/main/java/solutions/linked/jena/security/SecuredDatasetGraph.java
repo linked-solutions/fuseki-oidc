@@ -1,4 +1,4 @@
-package com.vdanyliuk.jena.security;
+package solutions.linked.jena.security;
 
 import static java.util.stream.Collectors.toList;
 
