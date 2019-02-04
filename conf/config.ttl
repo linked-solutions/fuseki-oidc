@@ -1,5 +1,3 @@
-# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
-
 ## Fuseki Server configuration file.
 
 @prefix :        <#> .
@@ -26,7 +24,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
          tdb:location "/db" ;
          perm:evaluatorImpl :secEvaluator ;
          perm:securityBaseModel :model ;
-         perm:securityGraphName "http://www.smartparticipation.com/security" .
+         perm:securityGraphName "http://www.smartswissparticipation.com/security" .
 
 :model a ja:MemoryModel ;
     ja:content [ja:externalContent <file:/sec_data.ttl>] .
@@ -35,7 +33,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 # and initializes with content
 :securityGraph rdf:type tdb:GraphTDB ;
     tdb:dataset :dataset ;
-    tdb:graphName <http://www.smartparticipation.com/security> .
+    tdb:graphName <http://www.smartswissparticipation.com/security> .
 
 # Creates security evaluator that will be using securityGraph
 # to check user's permissions

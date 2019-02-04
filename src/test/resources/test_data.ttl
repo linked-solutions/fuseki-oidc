@@ -1,42 +1,42 @@
-@prefix sec: <http://www.smartparticipation.com/security#> .
-@prefix users: <http://www.smartparticipation.com/users#> .
-@prefix graphs: <http://www.smartparticipation.com/graphs#> .
+@prefix sec: <http://www.smartswissparticipation.com/security#> .
+@prefix users: <http://www.smartswissparticipation.com/users#> .
+@prefix graphs: <http://www.smartswissparticipation.com/graphs#> .
 
-<http://www.smartparticipation.com/graphPermission/1> graphs:graph "http://www.smartparticipation.com/graphs/1" ;
+<http://www.smartswissparticipation.com/graphPermission/1> graphs:graph "http://www.smartswissparticipation.com/graphs/1" ;
                                                       sec:accessType "READ" .
-<http://www.smartparticipation.com/graphPermission/2> graphs:graph "http://www.smartparticipation.com/graphs/1" ;
+<http://www.smartswissparticipation.com/graphPermission/2> graphs:graph "http://www.smartswissparticipation.com/graphs/1" ;
                                                       sec:accessType "WRITE" .
-<http://www.smartparticipation.com/graphPermission/3> graphs:graph "http://www.smartparticipation.com/graphs/**" ;
+<http://www.smartswissparticipation.com/graphPermission/3> graphs:graph "http://www.smartswissparticipation.com/graphs/**" ;
                                                       sec:accessType "READ" .
-<http://www.smartparticipation.com/graphPermission/4> graphs:graph "http://www.smartparticipation.com/graphs/**" ;
+<http://www.smartswissparticipation.com/graphPermission/4> graphs:graph "http://www.smartswissparticipation.com/graphs/**" ;
                                                       sec:accessType "READ" ;
                                                       sec:accessType "WRITE" .
-<http://www.smartparticipation.com/graphPermission/5> graphs:graph "**" ;
+<http://www.smartswissparticipation.com/graphPermission/5> graphs:graph "**" ;
                                                       sec:accessType "READ" ;
                                                       sec:accessType "WRITE" .
 
-#User one have access to read only http://www.smartparticipation.com/graphs/1
-<http://www.smartparticipation.com/users/1> users:email "user.one@mail.com" ;
+#User one have access to read only http://www.smartswissparticipation.com/graphs/1
+<http://www.smartswissparticipation.com/users/1> users:email "user.one@mail.com" ;
         users:name  "User One" ;
-        sec:graphAccess <http://www.smartparticipation.com/graphPermission/1> .
+        sec:graphAccess <http://www.smartswissparticipation.com/graphPermission/1> .
 
-#User two have access to read and write only http://www.smartparticipation.com/graphs/1
-<http://www.smartparticipation.com/users/2> users:email "user.two@mail.com" ;
+#User two have access to read and write only http://www.smartswissparticipation.com/graphs/1
+<http://www.smartswissparticipation.com/users/2> users:email "user.two@mail.com" ;
         users:name  "User Two" ;
-        sec:graphAccess <http://www.smartparticipation.com/graphPermission/1> ;
-        sec:graphAccess <http://www.smartparticipation.com/graphPermission/2> .
+        sec:graphAccess <http://www.smartswissparticipation.com/graphPermission/1> ;
+        sec:graphAccess <http://www.smartswissparticipation.com/graphPermission/2> .
 
-#User three have access to read any graph that starts with http://www.smartparticipation.com/graphs
-<http://www.smartparticipation.com/users/3> users:email "user.three@mail.com" ;
+#User three have access to read any graph that starts with http://www.smartswissparticipation.com/graphs
+<http://www.smartswissparticipation.com/users/3> users:email "user.three@mail.com" ;
         users:name  "User Three" ;
-        sec:graphAccess <http://www.smartparticipation.com/graphPermission/3> .
+        sec:graphAccess <http://www.smartswissparticipation.com/graphPermission/3> .
 
-#User four have access to read and write any graph that starts with http://www.smartparticipation.com/graphs
-<http://www.smartparticipation.com/users/4> users:email "user.four@mail.com" ;
+#User four have access to read and write any graph that starts with http://www.smartswissparticipation.com/graphs
+<http://www.smartswissparticipation.com/users/4> users:email "user.four@mail.com" ;
         users:name  "User Four" ;
-        sec:graphAccess <http://www.smartparticipation.com/graphPermission/4> .
+        sec:graphAccess <http://www.smartswissparticipation.com/graphPermission/4> .
 
 #User five have access to read and write any graph
-<http://www.smartparticipation.com/users/5> users:email "user.five@mail.com" ;
+<http://www.smartswissparticipation.com/users/5> users:email "user.five@mail.com" ;
         users:name  "User Five" ;
-        sec:graphAccess <http://www.smartparticipation.com/graphPermission/5> .
+        sec:graphAccess <http://www.smartswissparticipation.com/graphPermission/5> .

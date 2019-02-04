@@ -31,19 +31,19 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private static final String OWN_GRAPH_PREFIX = "http://www.smartparticipation.com/graphs/users/";
+    private static final String OWN_GRAPH_PREFIX = "http://www.smartswissparticipation.com/graphs/users/";
 
     private static final String ONE_ACTION_QUERY =
-            "prefix sec: <http://www.smartparticipation.com/security#> " +
-                    "prefix users: <http://www.smartparticipation.com/users#> " +
-                    "prefix graphs: <http://www.smartparticipation.com/graphs#> " +
+            "prefix sec: <http://www.smartswissparticipation.com/security#> " +
+                    "prefix users: <http://www.smartswissparticipation.com/users#> " +
+                    "prefix graphs: <http://www.smartswissparticipation.com/graphs#> " +
                     "" +
                     "SELECT ?graph ?permission " +
                     "WHERE { " +
-                    "        {?u users:email ?email ;" +
+                    "        {?u users:username ?username ;" +
                     "            sec:graphAccess ?ga ." +
                     "        } UNION  " +
-                    "        {<http://www.smartparticipation.com/users/**> sec:graphAccess ?ga .}" +
+                    "        {<http://www.smartswissparticipation.com/users/**> sec:graphAccess ?ga .}" +
                     "        ?ga graphs:graph ?graph ;" +
                     "            sec:accessType ?permission" +
                     "} ";
@@ -153,15 +153,15 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
     }
 
     private boolean hasAccess(Subject subject, Node_URI graphIRI, Action action) {
-        String email = subject.getPrincipal().toString();
-        if (isOwnGraph(email, graphIRI)) {
-            log.debug("Principal: " + email + "\tAction: " + action + "\tNode:" + graphIRI + "\tAuthorized for own graph");
+        String username = subject.getPrincipal().toString();
+        if (isOwnGraph(username, graphIRI)) {
+            log.debug("Principal: " + username + "\tAction: " + action + "\tNode:" + graphIRI + "\tAuthorized for own graph");
             return true;
         } else {
             boolean result = isSecurityGraph(graphIRI) ?
-                    inOtherThread(() -> checkOtherGraphs(graphIRI, action, email)) :
-                    checkOtherGraphs(graphIRI, action, email);
-            log.debug("Principal: " + email + "\tAction: " + action + "\tNode:" + graphIRI + "\tAuthorized: " + result);
+                    inOtherThread(() -> checkOtherGraphs(graphIRI, action, username)) :
+                    checkOtherGraphs(graphIRI, action, username);
+            log.debug("Principal: " + username + "\tAction: " + action + "\tNode:" + graphIRI + "\tAuthorized: " + result);
             return result;
         }
     }
@@ -186,15 +186,15 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
         return false;
     }
 
-    private boolean isOwnGraph(String email, Node_URI graphIRI) {
-        String ownGraphURI = OWN_GRAPH_PREFIX + email;
+    private boolean isOwnGraph(String username, Node_URI graphIRI) {
+        String ownGraphURI = OWN_GRAPH_PREFIX + username;
         return ownGraphURI.equals(graphIRI.getURI());
     }
 
     @Cacheable
-    private boolean checkOtherGraphs(Node_URI graphIRI, Action action, String email) {
+    private boolean checkOtherGraphs(Node_URI graphIRI, Action action, String username) {
         ParameterizedSparqlString queryString = new ParameterizedSparqlString(ONE_ACTION_QUERY);
-        queryString.setLiteral("email", email);
+        queryString.setLiteral("username", username);
         Query query = QueryFactory.create(queryString.toString());
 
         try(QueryExecution queryExecution = QueryExecutionFactory.create(query, securityModel)) {

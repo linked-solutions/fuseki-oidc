@@ -41,17 +41,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("Authenticated user test")
 class GraphSecurityEvaluatorTest {
 
-    private static final String GRAPH_ONE = "http://www.smartparticipation.com/graphs/1";
+    private static final String GRAPH_ONE = "http://www.smartswissparticipation.com/graphs/1";
     private static final Node GRAPH_ONE_URI = NodeFactory.createURI(GRAPH_ONE);
-    private static final String GRAPH_TWO = "http://www.smartparticipation.com/graphs/2";
-    private static final String GRAPH_THREE = "http://www.smartparticipation.com/graphs/3";
+    private static final String GRAPH_TWO = "http://www.smartswissparticipation.com/graphs/2";
+    private static final String GRAPH_THREE = "http://www.smartswissparticipation.com/graphs/3";
     private static final String GRAPH_UNKNOWN = "http://some.other.graph/to/test";
 
-    private static final String GRAPH_OWN_USER_ONE = "http://www.smartparticipation.com/graphs/users/user.one@mail.com";
-    private static final String GRAPH_OWN_USER_TWO = "http://www.smartparticipation.com/graphs/users/user.two@mail.com";
-    private static final String GRAPH_OWN_USER_THREE = "http://www.smartparticipation.com/graphs/users/user.three@mail.com";
-    private static final String GRAPH_OWN_USER_FOUR = "http://www.smartparticipation.com/graphs/users/user.four@mail.com";
-    private static final String GRAPH_OWN_USER_FIVE = "http://www.smartparticipation.com/graphs/users/user.five@mail.com";
+    private static final String GRAPH_OWN_USER_ONE = "http://www.smartswissparticipation.com/graphs/users/user.one@mail.com";
+    private static final String GRAPH_OWN_USER_TWO = "http://www.smartswissparticipation.com/graphs/users/user.two@mail.com";
+    private static final String GRAPH_OWN_USER_THREE = "http://www.smartswissparticipation.com/graphs/users/user.three@mail.com";
+    private static final String GRAPH_OWN_USER_FOUR = "http://www.smartswissparticipation.com/graphs/users/user.four@mail.com";
+    private static final String GRAPH_OWN_USER_FIVE = "http://www.smartswissparticipation.com/graphs/users/user.five@mail.com";
 
     @Mock
     private Subject subject;
@@ -66,7 +66,7 @@ class GraphSecurityEvaluatorTest {
 
         //Create security graph
         GraphMem memoryGraph = new GraphMem();
-        NamedGraphWrapper securityGraph = new NamedGraphWrapper(NodeFactory.createURI("http://www.smartparticipation.com/security"), memoryGraph);
+        NamedGraphWrapper securityGraph = new NamedGraphWrapper(NodeFactory.createURI("http://www.smartswissparticipation.com/security"), memoryGraph);
         Model securityModel = new ModelCom(securityGraph);
         securityModel.read(Objects.requireNonNull(getClass().getClassLoader().getResource("test_security_data.ttl")).toString());
 
