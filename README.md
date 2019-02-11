@@ -62,7 +62,7 @@ There are just two classes:
 * Get the last docker image jboss/keycloak
 * Run with `docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8080:8080 jboss/keycloak`   
   username and password can be changed off course 
-* Go to localhost:8080/auth, login as admin with credentials
+* Go to http://localhost:8080/auth/admin/, login as admin with credentials
 * Open "Realm Settings" -> "Tokens" and setup default signature to RS-256
 * Setup own users login/signup in "Realm Settings" -> "Login" 
   or just add any identity provider in "Identity Providers" page   
