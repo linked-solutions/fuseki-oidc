@@ -64,7 +64,7 @@ There are just two classes:
   username and password can be changed off course 
 * Go to http://localhost:8080/auth/admin/, login as admin with credentials
 * Open "Realm Settings" -> "Tokens" and setup default signature to RS-256
-* Setup own users login/signup in "Realm Settings" -> "Login" 
+* Enable `User registration` in "Realm Settings" -> "Login"
   or just add any identity provider in "Identity Providers" page   
   _IMPORTANT_ you need to include `email` into "Default Scopes" of an identity provider
 * setup new client for frontend, set name and url. 
