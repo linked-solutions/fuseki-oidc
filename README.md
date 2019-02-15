@@ -2,7 +2,7 @@
 This project provides ability to have flexible graph based permissions control for TDB2 datasets   
 Authentication is done through [Keycloak](https://www.keycloak.org/)   
 Authorization is based on data that contains in graph `http://www.smartswissparticipation.com/security`
-where each user can have assigned read/write permissions to a concrete graph of ANT style wildcard graph name   
+where each user can have assigned read/write permissions to a concrete graph or to all graphs whose name matches a specified [ANT style pattern](http://ant.apache.org/manual/dirtasks.html#patterns).
 Also each user have complete access to it's "OWN" graph `http://www.smartswissparticipation.com/graphs/users/{username}`  
 By default admin user has ability to login through basic auth and have full access to every graph in dataset
 
