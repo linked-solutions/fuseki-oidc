@@ -15,7 +15,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 [] rdf:type fuseki:Server .
 
 [] ja:loadClass    "org.apache.jena.permissions.SecuredAssembler" .
-[] ja:loadClass    "com.vdanyliuk.jena.security.SecuredDatasetAssembler" .
+[] ja:loadClass    "solutions.linked.jena.security.SecuredDatasetAssembler" .
     perm:Model       rdfs:subClassOf  ja:NamedModel .
 
 # Creates dataset that will be located in /db
@@ -41,7 +41,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     perm:args [
         rdf:_1 :securityGraph ;
     ] ;
-    perm:evaluatorClass "com.vdanyliuk.jena.security.GraphSecurityEvaluator" .
+    perm:evaluatorClass "solutions.linked.jena.security.GraphSecurityEvaluator" .
 
 # Creates service to serve RDF data through HTTP
 <#service1> rdf:type fuseki:Service ;

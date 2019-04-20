@@ -17,7 +17,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 [] rdf:type fuseki:Server .
 
 [] ja:loadClass    "org.apache.jena.permissions.SecuredAssembler" .
-[] ja:loadClass    "com.vdanyliuk.jena.security.SecuredDatasetAssembler" .
+[] ja:loadClass    "solutions.linked.jena.security.SecuredDatasetAssembler" .
     perm:Model       rdfs:subClassOf  ja:NamedModel .
 
 :dataset rdf:type perm:SecuredDataset ;
@@ -29,7 +29,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     perm:args [
         rdf:_1 :baseModel ;
     ] ;
-    perm:evaluatorClass "com.vdanyliuk.jena.security.GraphSecurityEvaluator" .
+    perm:evaluatorClass "solutions.linked.jena.security.GraphSecurityEvaluator" .
 
 :baseModel rdf:type ja:MemoryModel ;
            ja:content [ja:externalContent <file:/sec_data.ttl> ] .
