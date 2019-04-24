@@ -1,7 +1,7 @@
 {
   "realm": "master",
   "resource": "fuseki-server",
-  "auth-server-url": "http://docker.server.com:8080/auth",
+  "auth-server-url": "http://keycloak:8080/auth",
   "ssl-required": "external",
   "use-resource-role-mappings": false,
   "enable-cors": true,

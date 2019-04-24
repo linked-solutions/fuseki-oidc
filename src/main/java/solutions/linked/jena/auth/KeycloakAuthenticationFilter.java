@@ -145,7 +145,7 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter implement
 
     @Override
     public void onFilterConfigSet() throws IOException {
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("keycloack.json")){
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("keycloak.json")){
             KeycloakDeployment kd = createKeycloakDeploymentFrom(is);
             deploymentContext = new AdapterDeploymentContext(kd);
             System.out.println("Keycloak is using a per-deployment configuration.");
