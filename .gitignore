@@ -1,0 +1,8 @@
+target
+dependency-reduced-pom.xml
+nb-configuration.xml
+nbactions.xml
+.settings
+.classpath
+.factorypath
+.project
