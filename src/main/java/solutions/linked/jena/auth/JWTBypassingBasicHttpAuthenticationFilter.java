@@ -18,4 +18,9 @@ public class JWTBypassingBasicHttpAuthenticationFilter extends BasicHttpAuthenti
         String authHeader = ((HttpServletRequest) request).getHeader(HttpHeaders.AUTHORIZATION);
         return authHeader == null || !authHeader.trim().toLowerCase().startsWith("bearer");
     }
+    
+    @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        return ((HttpServletRequest)request).getMethod().equalsIgnoreCase("OPTIONS") || super.isAccessAllowed(request, response, mappedValue);
+    }
 }
