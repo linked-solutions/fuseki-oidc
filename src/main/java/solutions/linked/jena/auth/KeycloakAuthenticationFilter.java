@@ -79,7 +79,7 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter implement
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         if (((HttpServletRequest) request).getMethod().equalsIgnoreCase("OPTIONS")) {
-            ((HttpServletResponse)response).setHeader("Access-Control-Allow-Origin", "*");
+            ((HttpServletResponse)response).setHeader("Access-Control-Allow-Origin", ((javax.servlet.http.HttpServletRequest) request).getHeader("Origin"));
             return true;
         } else {
             return super.isAccessAllowed(request, response, mappedValue);
