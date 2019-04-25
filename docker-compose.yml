@@ -1,0 +1,20 @@
+version: '3'
+services:
+  fuseki:
+    build: .
+    depends_on:
+      - "keycloak"
+    ports:
+      - "3030:3030"
+      - "15005:15005" # Debugging
+    volumes:
+      - ~/m2:/root/.m2:rw
+    environment:
+      AUTH_SERVER_URL: "http://keycloak:8080/auth"
+  keycloak:
+    image: "jboss/keycloak"
+    environment:
+      KEYCLOAK_USER: "admin"
+      KEYCLOAK_PASSWORD: "admin"
+    ports:
+      - "8080:8080" 

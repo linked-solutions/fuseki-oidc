@@ -43,6 +43,7 @@ import org.keycloak.adapters.spi.AuthChallenge;
 import org.keycloak.adapters.spi.AuthOutcome;
 import org.keycloak.adapters.spi.InMemorySessionIdMapper;
 import org.keycloak.adapters.spi.SessionIdMapper;
+import org.keycloak.representations.adapters.config.AdapterConfig;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -146,20 +147,19 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter implement
     @Override
     public void onFilterConfigSet() throws IOException {
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("keycloak.json")){
-            KeycloakDeployment kd = createKeycloakDeploymentFrom(is);
+            AdapterConfig adapterConfig = KeycloakDeploymentBuilder.loadAdapterConfig(is);
+            String authServerUrl = System.getenv("AUTH_SERVER_URL");
+            if (authServerUrl != null) {
+                adapterConfig.setAuthServerUrl(authServerUrl);
+            } else {
+                System.out.println("WARNING: Environment varaible AUTH_SERVER_URL not set.");
+            }
+            KeycloakDeployment kd = KeycloakDeploymentBuilder.build(adapterConfig);
             deploymentContext = new AdapterDeploymentContext(kd);
             System.out.println("Keycloak is using a per-deployment configuration.");
 
             nodesRegistrationManagement = new NodesRegistrationManagement();
         }
-    }
-
-    private KeycloakDeployment createKeycloakDeploymentFrom(InputStream is) {
-        if (is == null) {
-            System.out.println("No adapter configuration. Keycloak is unconfigured and will deny all requests.");
-            return new KeycloakDeployment();
-        }
-        return KeycloakDeploymentBuilder.build(is);
     }
 
 }
