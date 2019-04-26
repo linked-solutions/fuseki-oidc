@@ -6,3 +6,4 @@ nbactions.xml
 .classpath
 .factorypath
 .project
+node_modules
