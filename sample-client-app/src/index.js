@@ -60,12 +60,19 @@ INSERT DATA
 
 class QueryForm {
     constructor(element, endpoint, query, method = "GET") {
-        let form = `<label for="endpoint">SPARQL Endpoint:</label>
+        let form = `<div class="card">
+    <div class="flexrow">
+        <label for="endpoint">SPARQL Endpoint:</label>
         <input class="endpoint" type="url" value="${endpoint}">
-        <textarea class="queryfield" rows="10" style="width:100%;font-family: 'Courier New', Courier, monospace" placeholder="Query">${query || ""}</textarea>
-        <button disabled class="sendquery">Send Query</button> (${method})
-        <pre class="error" style="color:red"></pre>
-        <pre class="result"></pre>`
+    </div>
+    <div class="flexrow">
+        <textarea class="queryfield" rows="10" placeholder="Query">${query || ""}</textarea>
+    </div>
+    <button disabled class="sendquery">Send Query</button>
+    <span class="label">(${method})</span>
+    <pre class="error" style="color:red"></pre>
+    <pre class="result"></pre>
+</div>`
         element.innerHTML = form;
         this.sendQueryButton = element.getElementsByClassName('sendquery')[0];
         this.sendQueryButton.addEventListener("click", () => this.sendQuery(), false);
@@ -103,17 +110,18 @@ class QueryForm {
                         this.resultField.textContent = JSON.stringify(j, undefined, "  ")
                     }).catch(e => {
                         console.log("ERROR?: ", e);
+                        this.errorField.textContent = e.trimRight();
                     });
                 }
             } else {
                 r.text().then(t => {
                     console.warn(t);
-                    this.errorField.textContent = t;
+                    this.errorField.textContent = t.trimRight();
                 });
             }
         }).catch(r => {
-            console.log("catched");
-            console.warn(r)
+            console.warn(r);
+            this.errorField.textContent = r.trimRight();
         })
     }
 }
