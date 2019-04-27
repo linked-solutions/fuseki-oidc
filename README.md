@@ -82,6 +82,7 @@ There are just two classes:
   _IMPORTANT_ you need to include `email` into "Default Scopes" of an identity provider
 * setup new client for frontend, set name and url. 
   After it created add an email mapper in "Mappers" tab using "Add Builtin" button
+  * Enable Implicit Flow for this client in its keycloak settings
 * Library for frontend interaction with Keycloak can be found [here](https://www.npmjs.com/package/keycloak-js)
 
 Additional information about [keycloak](https://www.keycloak.org/).  
