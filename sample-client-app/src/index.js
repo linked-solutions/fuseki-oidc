@@ -1,25 +1,56 @@
 import Oidc from 'oidc-client';
-var followLinks = () => true;
+const followLinks = () => true;
 
 const signInButton = document.getElementById('signin');
 signInButton.addEventListener("click", signin, false);
+const loginstatus = document.getElementById('loginstatus');
 
+const authorityField = document.getElementById('authority');
+const clientidField = document.getElementById('clientid');
+
+const storage = localStorage;
 
 const settings = {
-    authority: 'http://keycloak:8080/auth/realms/master',
-    client_id: 'frontend',
-    redirect_uri: 'http://localhost:8081/',
-    post_logout_redirect_uri: 'http://google.com/',
+    //authority: 'http://keycloak:8080/auth/realms/master',
+    //client_id: 'frontend',
+    redirect_uri: window.location.origin + window.location.pathname,
+    post_logout_redirect_uri: window.location.origin + window.location.path,
     response_type: 'id_token token',
     scope: 'openid email roles',
-
     filterProtocolClaims: true,
     loadUserInfo: true
 };
-const client = new Oidc.OidcClient(settings);
+
+function store() {
+    try {
+        storage.setItem('oidc-settings', JSON.stringify(settings));
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+function restore() {
+    try {
+        if (storage.getItem('oidc-settings')) {
+            const storedSettings = JSON.parse(storage.getItem('oidc-settings'));
+            authorityField.value = storedSettings.authority || 'http://keycloak:8080/auth/realms/master';
+            clientidField.value = storedSettings.client_id || 'frontend';
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 function signin() {
-    client.createSigninRequest({ state: { bar: 15 } }).then(function (req) {
+    settings.authority = authorityField.value;
+    settings.client_id = clientidField.value;
+    store()
+    const client = new Oidc.OidcClient(settings);
+    client.createSigninRequest({
+        state: {
+            bar: 15
+        }
+    }).then(function (req) {
         //console.log("signin request", req, req.url);
         if (followLinks()) {
             window.location = req.url;
@@ -30,12 +61,16 @@ function signin() {
 }
 
 let signinResponse;
+
 function processSigninResponse() {
+    settings.authority = authorityField.value;
+    settings.client_id = clientidField.value;
+    const client = new Oidc.OidcClient(settings);
     client.processSigninResponse().then(function (response) {
         signinResponse = response;
         //console.log("signin response", signinResponse);
-        signInButton.innerHTML = `Logged in as ${signinResponse.profile.preferred_username}`;
-        signInButton.disabled = true;
+        loginstatus.textContent = `Logged in as ${signinResponse.profile.preferred_username}`;
+        //signInButton.disabled = true;
         new QueryForm(document.getElementById("queryForm"), "http://localhost:3030/ds/query", `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {
@@ -126,11 +161,12 @@ class QueryForm {
     }
 }
 
+restore();
+
 if (followLinks()) {
     if (window.location.href.indexOf("#") >= 0) {
         processSigninResponse();
-    }
-    else if (window.location.href.indexOf("?") >= 0) {
+    } else if (window.location.href.indexOf("?") >= 0) {
         processSignoutResponse();
     }
 }

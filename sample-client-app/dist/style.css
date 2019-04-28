@@ -43,7 +43,7 @@ textarea,
 button {
   background-color: #6574CD;
   box-shadow: 0px 4px #5661B3;
-  border: none;
+  border-color: #6574CD;
   color: #ffffff;
   font-weight: bold;
   padding: .5rem 1rem;
@@ -53,6 +53,7 @@ button {
 
 button[disabled] {
   background-color: #B2B7FF;
+  border-color: #B2B7FF;
   box-shadow: 0px 4px #7886D7;
 }
 
@@ -106,4 +107,13 @@ textarea {
 .result:empty,
 .error:empty {
   display: none;
+}
+
+*:focus {
+  outline: none;
+  border-style: dotted;
+}
+
+button:focus {
+  border-color: #ffffff;
 }

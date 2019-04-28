@@ -12,7 +12,16 @@
 <body>
   <div class="container">
     <div class="card">
+      <div class="flexrow">
+        <label for="authority">Authority:</label>
+        <input id="authority" value="http://keycloak:8080/auth/realms/master" type="text">
+      </div>
+      <div class="flexrow">
+        <label for="clientid">Client ID:</label>
+        <input id="clientid" value="frontend" type="text">
+      </div>
       <button id="signin">Login</button>
+      <div id="loginstatus" class="result"></div>
     </div>
     <div id="queryForm"></div>
     <div id="queryForm2"></div>
