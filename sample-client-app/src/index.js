@@ -11,7 +11,7 @@ const clientidField = document.getElementById('clientid');
 const storage = localStorage;
 
 const settings = {
-    //authority: 'http://keycloak:8080/auth/realms/master',
+    //authority: 'https://oidc-wip.factsmission.org/auth/realms/master',
     //client_id: 'frontend',
     redirect_uri: window.location.origin + window.location.pathname,
     post_logout_redirect_uri: window.location.origin + window.location.pathname,
@@ -33,7 +33,7 @@ function restore() {
     try {
         if (storage.getItem('oidc-settings')) {
             const storedSettings = JSON.parse(storage.getItem('oidc-settings'));
-            authorityField.value = storedSettings.authority || 'http://keycloak:8080/auth/realms/master';
+            authorityField.value = storedSettings.authority || 'https://oidc-wip.factsmission.org/auth/realms/master';
             clientidField.value = storedSettings.client_id || 'frontend';
         }
     } catch (error) {
@@ -78,7 +78,7 @@ function processSigninResponse() {
         loginstatus.append(loginstatusText);
         loginstatus.append(logoutButton);
         //signInButton.disabled = true;
-        new QueryForm(document.getElementById("queryForm"), "http://localhost:3030/ds/query", `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        new QueryForm(document.getElementById("queryForm"), "https://fuseki-oidc.factsmission.org/ds/query", `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {
     GRAPH ?graph {
@@ -86,7 +86,7 @@ SELECT * WHERE {
     }
 } 
 LIMIT 10`);
-        new QueryForm(document.getElementById("queryForm2"), "http://localhost:3030/ds/update", `PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        new QueryForm(document.getElementById("queryForm2"), "https://fuseki-oidc.factsmission.org/ds/update", `PREFIX dc: <http://purl.org/dc/elements/1.1/>
 INSERT DATA
 {
     GRAPH <http://www.smartswissparticipation.com/graphs/users/${signinResponse.profile.email}> {
