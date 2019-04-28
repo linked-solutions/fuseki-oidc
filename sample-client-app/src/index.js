@@ -11,7 +11,7 @@ const clientidField = document.getElementById('clientid');
 const storage = localStorage;
 
 const settings = {
-    //authority: 'http://keycloak:8080/auth/realms/master',
+    //authority: 'https://oidc-wip.factsmission.org/auth/realms/master',
     //client_id: 'frontend',
     redirect_uri: window.location.origin + window.location.pathname,
     post_logout_redirect_uri: window.location.origin + window.location.pathname,
@@ -33,7 +33,7 @@ function restore() {
     try {
         if (storage.getItem('oidc-settings')) {
             const storedSettings = JSON.parse(storage.getItem('oidc-settings'));
-            authorityField.value = storedSettings.authority || 'http://keycloak:8080/auth/realms/master';
+            authorityField.value = storedSettings.authority || 'https://oidc-wip.factsmission.org/auth/realms/master';
             clientidField.value = storedSettings.client_id || 'frontend';
         }
     } catch (error) {
