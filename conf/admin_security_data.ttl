@@ -9,3 +9,7 @@
 
 <http://www.smartswissparticipation.com/users/admin> users:username "admin" ;
         sec:graphAccess <http://www.smartswissparticipation.com/graphPermission/1> .
+
+
+<http://www.smartswissparticipation.com/users/**> graphs:graph "**" ;
+                                                      sec:accessType "READ" .
