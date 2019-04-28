@@ -14,7 +14,7 @@ const settings = {
     //authority: 'http://keycloak:8080/auth/realms/master',
     //client_id: 'frontend',
     redirect_uri: window.location.origin + window.location.pathname,
-    post_logout_redirect_uri: window.location.origin + window.location.path,
+    post_logout_redirect_uri: window.location.origin + window.location.pathname,
     response_type: 'id_token token',
     scope: 'openid email roles',
     filterProtocolClaims: true,
@@ -69,7 +69,14 @@ function processSigninResponse() {
     client.processSigninResponse().then(function (response) {
         signinResponse = response;
         //console.log("signin response", signinResponse);
-        loginstatus.textContent = `Logged in as ${signinResponse.profile.preferred_username}`;
+        let logoutButton = document.createElement('button');
+        logoutButton.innerText = 'Logout';
+        logoutButton.addEventListener('click', signout, false);
+        let loginstatusText = document.createElement('div');
+        loginstatusText.className = 'result';
+        loginstatusText.innerText = `Logged in as ${signinResponse.profile.preferred_username}`;
+        loginstatus.append(loginstatusText);
+        loginstatus.append(logoutButton);
         //signInButton.disabled = true;
         new QueryForm(document.getElementById("queryForm"), "http://localhost:3030/ds/query", `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -90,6 +97,30 @@ INSERT DATA
         Array.from(document.getElementsByClassName('sendquery')).forEach(e => e.disabled = false)
     }).catch(function (err) {
         console.warn(err);
+    });
+}
+
+function signout() {
+    settings.authority = authorityField.value;
+    settings.client_id = clientidField.value;
+    const client = new Oidc.OidcClient(settings);
+    client.createSignoutRequest({ id_token_hint: signinResponse && signinResponse.id_token, state: { foo: 5 } }).then(function(req) {
+        console.log("signout request", req, "<a href='" + req.url + "'>go signout</a>");
+        if (followLinks()) {
+            window.location = req.url;
+        }
+    });
+}
+
+function processSignoutResponse() {
+    settings.authority = authorityField.value;
+    settings.client_id = clientidField.value;
+    const client = new Oidc.OidcClient(settings);
+    client.processSignoutResponse().then(function(response) {
+        signinResponse = null;
+        console.log("signout response", response);
+    }).catch(function(err) {
+        log(err);
     });
 }
 
