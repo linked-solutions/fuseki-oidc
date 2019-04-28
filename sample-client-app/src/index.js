@@ -96,6 +96,10 @@ INSERT DATA
 }`, "POST");
         Array.from(document.getElementsByClassName('sendquery')).forEach(e => e.disabled = false)
     }).catch(function (err) {
+        let loginstatusText = document.createElement('div');
+        loginstatusText.className = 'error';
+        loginstatusText.innerText = `${err}`;
+        loginstatus.append(loginstatusText);
         console.warn(err);
     });
 }
@@ -176,7 +180,7 @@ class QueryForm {
                         this.resultField.textContent = JSON.stringify(j, undefined, "  ")
                     }).catch(e => {
                         console.log("ERROR?: ", e);
-                        this.errorField.textContent = e.trimRight();
+                        this.errorField.textContent = e;
                     });
                 }
             } else {
@@ -187,7 +191,7 @@ class QueryForm {
             }
         }).catch(r => {
             console.warn(r);
-            this.errorField.textContent = r.trimRight();
+            this.errorField.textContent = r;
         })
     }
 }
