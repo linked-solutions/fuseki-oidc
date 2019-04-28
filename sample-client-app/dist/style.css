@@ -14,7 +14,8 @@ input,
 textarea,
 .card,
 .error,
-.result {
+.result,
+.info {
   border-radius: 6px;
   border-width: 2px;
   border-style: solid;
@@ -70,6 +71,7 @@ label,
 input,
 textarea,
 .result,
+.info,
 .error {
   padding: .5rem;
   margin: .5rem 0;
@@ -79,6 +81,7 @@ textarea,
 input,
 textarea,
 .result,
+.info,
 .error {
   flex-grow: 1;
   max-width: 100%;
@@ -92,6 +95,7 @@ textarea {
 }
 
 .result,
+.info,
 .error {
   overflow-x: auto;
 }
@@ -102,6 +106,12 @@ textarea {
   color: #0F2F21;
 }
 
+.info {
+  background-color: #DAE1E7;
+  border-color: #606F7B;
+  color: #22292F;
+}
+
 .error {
   background-color: #F9ACAA;
   border-color: #E3342F;
@@ -109,6 +119,7 @@ textarea {
 }
 
 .result:empty,
+.info:empty,
 .error:empty {
   display: none;
 }

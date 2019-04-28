@@ -73,7 +73,7 @@ function processSigninResponse() {
         logoutButton.innerText = 'Logout';
         logoutButton.addEventListener('click', signout, false);
         let loginstatusText = document.createElement('div');
-        loginstatusText.className = 'result';
+        loginstatusText.className = 'info';
         loginstatusText.innerText = `Logged in as ${signinResponse.profile.preferred_username}`;
         loginstatus.append(loginstatusText);
         loginstatus.append(logoutButton);
