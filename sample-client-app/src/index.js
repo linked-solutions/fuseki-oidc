@@ -134,7 +134,7 @@ class QueryForm {
     <div class="flexrow">
         <textarea class="queryfield" rows="10" placeholder="Query">${query || ""}</textarea>
     </div>
-    <button disabled class="sendquery">Send Query</button>
+    <button disabled class="sendquery">Send ${method === 'POST' ? 'Update' : 'Query'}</button>
     <span class="label">(${method})</span>
     <pre class="error" style="color:red"></pre>
     <pre class="result"></pre>
