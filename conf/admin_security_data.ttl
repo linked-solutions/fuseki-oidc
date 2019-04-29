@@ -11,5 +11,7 @@
         sec:graphAccess <http://www.smartswissparticipation.com/graphPermission/1> .
 
 
-<http://www.smartswissparticipation.com/users/**> graphs:graph "**" ;
-                                                      sec:accessType "READ" .
+<http://www.smartswissparticipation.com/users/**> sec:graphAccess [
+        graphs:graph "**" ;
+        sec:accessType "READ" 
+].
