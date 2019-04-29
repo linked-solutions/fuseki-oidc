@@ -35,6 +35,9 @@ function restore() {
             const storedSettings = JSON.parse(storage.getItem('oidc-settings'));
             authorityField.value = storedSettings.authority || 'https://oidc-wip.factsmission.org/auth/realms/master';
             clientidField.value = storedSettings.client_id || 'frontend';
+        } else {
+            authorityField.value = 'https://oidc-wip.factsmission.org/auth/realms/master';
+            clientidField.value = 'frontend';
         }
     } catch (error) {
         console.log(error)
