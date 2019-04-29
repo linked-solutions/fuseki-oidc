@@ -35,6 +35,9 @@ function restore() {
             const storedSettings = JSON.parse(storage.getItem('oidc-settings'));
             authorityField.value = storedSettings.authority || 'https://oidc-wip.factsmission.org/auth/realms/master';
             clientidField.value = storedSettings.client_id || 'frontend';
+        } else {
+            authorityField.value = 'https://oidc-wip.factsmission.org/auth/realms/master';
+            clientidField.value = 'frontend';
         }
     } catch (error) {
         console.log(error)
@@ -78,7 +81,7 @@ function processSigninResponse() {
         loginstatus.append(loginstatusText);
         loginstatus.append(logoutButton);
         //signInButton.disabled = true;
-        new QueryForm(document.getElementById("queryForm"), "http://localhost:3030/ds/query", `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        new QueryForm(document.getElementById("queryForm"), "https://fuseki-oidc.factsmission.org/ds/query", `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {
     GRAPH ?graph {
@@ -86,7 +89,7 @@ SELECT * WHERE {
     }
 } 
 LIMIT 10`);
-        new QueryForm(document.getElementById("queryForm2"), "http://localhost:3030/ds/update", `PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        new QueryForm(document.getElementById("queryForm2"), "https://fuseki-oidc.factsmission.org/ds/update", `PREFIX dc: <http://purl.org/dc/elements/1.1/>
 INSERT DATA
 {
     GRAPH <http://www.smartswissparticipation.com/graphs/users/${signinResponse.profile.email}> {
@@ -96,6 +99,10 @@ INSERT DATA
 }`, "POST");
         Array.from(document.getElementsByClassName('sendquery')).forEach(e => e.disabled = false)
     }).catch(function (err) {
+        let loginstatusText = document.createElement('div');
+        loginstatusText.className = 'error';
+        loginstatusText.innerText = `${err}`;
+        loginstatus.append(loginstatusText);
         console.warn(err);
     });
 }
@@ -134,7 +141,7 @@ class QueryForm {
     <div class="flexrow">
         <textarea class="queryfield" rows="10" placeholder="Query">${query || ""}</textarea>
     </div>
-    <button disabled class="sendquery">Send Query</button>
+    <button disabled class="sendquery">Send ${method === 'POST' ? 'Update' : 'Query'}</button>
     <span class="label">(${method})</span>
     <pre class="error" style="color:red"></pre>
     <pre class="result"></pre>
@@ -176,7 +183,7 @@ class QueryForm {
                         this.resultField.textContent = JSON.stringify(j, undefined, "  ")
                     }).catch(e => {
                         console.log("ERROR?: ", e);
-                        this.errorField.textContent = e.trimRight();
+                        this.errorField.textContent = e;
                     });
                 }
             } else {
@@ -187,7 +194,7 @@ class QueryForm {
             }
         }).catch(r => {
             console.warn(r);
-            this.errorField.textContent = r.trimRight();
+            this.errorField.textContent = r;
         })
     }
 }
