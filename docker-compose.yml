@@ -8,6 +8,7 @@ services:
       - "3030:3030"
       - "15005:15005" # Debugging
     volumes:
+      - ./db:/db
       - ~/m2:/root/.m2:rw
     environment:
       AUTH_SERVER_URL: "http://keycloak:8080/auth"
@@ -17,4 +18,11 @@ services:
       KEYCLOAK_USER: "admin"
       KEYCLOAK_PASSWORD: "admin"
     ports:
-      - "8080:8080" 
+      - "8080:8080"
+  sample:
+    image: "linkedsolutions/fuseki-oidc-sample-client"
+    environment:
+      KEYCLOAK_USER: "admin"
+      KEYCLOAK_PASSWORD: "admin"
+    ports:
+      - "8081:8080"
