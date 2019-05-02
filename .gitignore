@@ -7,3 +7,4 @@ nbactions.xml
 .factorypath
 .project
 node_modules
+db
