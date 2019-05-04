@@ -34,6 +34,23 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
     private static final String OWN_GRAPH_PREFIX = "http://www.smartswissparticipation.com/graphs/users/";
 
     private static final String ONE_ACTION_QUERY =
+            "prefix fo: <https://linked.solutions/fuseki-oidc/ontology#>  " +
+            "prefix foaf:  <http://xmlns.com/foaf/0.1/> "+
+            "prefix acl:  <http://www.w3.org/ns/auth/acl#> " +
+                    "" +
+                    "SELECT ?graph ?permission " +
+                    "WHERE { " +
+                    "     {"+
+                    "        ?authorization fo:agentUserName ?username ." +
+                    "     } UNION {"+
+                    "        ?authorization acl:agentClass foaf:Agent . " +
+                    "     }"+
+                    "     ?authorization a acl:Authorization ;" + 
+                    "           fo:accessTo ?graph ;" +
+                    "           acl:mode  ?permission ." +
+                    "} ";
+    
+    private static final String ONE_ACTION_QUERY_OLD =
             "prefix sec: <http://www.smartswissparticipation.com/security#> " +
                     "prefix users: <http://www.smartswissparticipation.com/users#> " +
                     "prefix graphs: <http://www.smartswissparticipation.com/graphs#> " +
@@ -202,7 +219,7 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
             while (resultSet.hasNext()) {
                 QuerySolution solution = resultSet.next();
                 String graph = solution.get("graph").asLiteral().getString();
-                String permission = solution.get("permission").asLiteral().getString();
+                String permission = solution.get("permission").asResource().getLocalName();
                 if (grantsAccess(graph, permission, graphIRI, action)) {
                     return true;
                 }

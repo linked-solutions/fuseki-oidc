@@ -20,7 +20,7 @@ By default admin user has ability to login through basic auth and has full acces
 
 ### Building
 
-    docker build -t linkedsolutiona:fuseki-oidc .
+    docker build -t linkedsolutions:fuseki-oidc .
 
 Note however that in most cases you won't need to build the docker image as this is provided via docker-hub.
 
@@ -41,10 +41,10 @@ Only this one user will be able to login with Basic auth.
 Security graph is prepopulated with the data that allows access to every graph for this user 
 so do not change the name, just password.   
 
-To build an image run `docker build -t linkedsolutiona:fuseki-server .`. Tag is optional
+To build an image run `docker build -t linkedsolutions:fuseki-server .`. Tag is optional
 
 ### Running
-To run docker image `docker run -it --add-host=172.17.0.2:docker.server.com -p 9090:3030 smartswissparticipation:fuseki-server`
+To run docker image `docker run -it --add-host=172.17.0.2:keycloak -p 9090:3030 smartswissparticipation:fuseki-server`
 the Ip 172.17.0.2 should be replaced with actual ip of Keycloak container
 you can access server at http://localhost:9090/
 
@@ -56,20 +56,11 @@ Any request to the fuseki server should contain the next header.
 ## Security configuration
 There is one predefined security graph: `<http://www.smartswissparticipation.com/security>` 
 It will contain information about user access to the other graphs. 
-There are just two classes:
-* User that have properties:
-   * `<http://www.smartswissparticipation.com/users#email>` as email
-   (for admin it's not email actually to distinguish it from other users)
-   * `<http://www.smartswissparticipation.com/security#graphAccess>` Uri of GraphAccess instance
-   There can be arbitrary count of graphAccess properties for a user
-* GraphAccess that have properties
-   * `<http://www.smartswissparticipation.com/graphs#graph>` Graph name. String literal that can use Ant wildcards. (see details [here](http://ant.apache.org/manual/dirtasks.html#patterns))
-   * `<http://www.smartswissparticipation.com/graphs#accessType>` String literal that can take next values : 
-      * READ
-      * WRITE (is a group of the next ones)
-      * CREATE
-      * DELETE
-      * UPDATE
+This graph contains instances of `acl:Authorization` that grant a user or a class of users
+access to a graph or all graph with a name matching a specified pattern.
+
+Fuseki-OIDC uses the acl Ontology defined at http://www.w3.org/ns/auth/acl# offering partial support with extensions defined in https://linked.solutions/fuseki-oidc/ontology#
+
       
 ## Keycloak setup
 * Get the last docker image jboss/keycloak
