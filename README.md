@@ -59,7 +59,7 @@ It will contain information about user access to the other graphs.
 This graph contains instances of `acl:Authorization` that grant a user or a class of users
 access to a graph or all graph with a name matching a specified pattern.
 
-Fuseki-OIDC uses the acl Ontology defined at http://www.w3.org/ns/auth/acl# offering partial support with extensions defined in https://linked.solutions/fuseki-oidc/ontology#
+Fuseki-OIDC uses the acl Ontology defined at http://www.w3.org/ns/auth/acl# offering partial support with extensions defined in https://linked.solutions/fuseki-oidc/ontology# described in [ontology.ttl](./ontology.ttl).
 
       
 ## Keycloak setup
