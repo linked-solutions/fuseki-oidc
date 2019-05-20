@@ -4,6 +4,7 @@
 @prefix acl:  <http://www.w3.org/ns/auth/acl#> .
 @prefix fo: <https://linked.solutions/fuseki-oidc/ontology#> .
 @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> . # https://jena.apache.org/documentation/assembler/assembler.ttl
 
 
 fo:accessTo a rdf:Property;
@@ -18,3 +19,21 @@ fo:agentUserName a rdf:Property;
          rdfs:domain acl:Authorization;
          rdfs:label "username";
          rdfs:range xsd:string .
+
+fo:SecuredDataset a rdfs:Class;
+         rdfs:label "Secured Dataset";
+         rdfs:comment "A Fuseki Dataset with access restricted".
+
+fo:securityGraphName a rdf:Property;
+         rdfs:label "security graph name";
+         rdfs:comment "The name of the graph that contains the access descriptions for the dataset";
+         rdfs:domain fo:SecuredDataset;
+         rdfs:range xsd:string.
+
+
+fo:securityBaseModel a rdf:Property;
+         rdfs:label "security base model";
+         rdfs:comment "Points to the assembler model used to provide the security graph";
+         rdfs:domain fo:SecuredDataset;
+         rdfs:range ja:Model.
+
