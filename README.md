@@ -1,7 +1,7 @@
 # Fuseki OIDC
 
 An [Apache Fuseki](http://jena.apache.org/documentation/fuseki2/index.html) extension and Docker ditribution that provides 
-OIDC based access control. The project is work in progress and currently known to work with the [Keycloak](https://www.keycloak.org/)
+OIDC based access control to Fuseki SPARQL Enpoint. The project is work in progress and currently known to work with the [Keycloak](https://www.keycloak.org/)
 open source Identity and Access Management solution.
 
 ## Info
