@@ -1,7 +1,7 @@
 version: '3'
 services:
   fuseki:
-    image: linkedsolutions:fuseki-oidc 
+    image: linkedsolutions/fuseki-oidc 
     depends_on:
       - "keycloak"
     ports:
