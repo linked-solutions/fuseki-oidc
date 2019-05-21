@@ -9,9 +9,9 @@ open source Identity and Access Management solution.
 This Fuseki distribution allows to access the SPARQL Enpoints both using standard HTTP Basic-Auth and logging in as admin user
 (its default password is `pw`) as well as by authenticating with a keycloak server.
 This project provides ability to have flexible graph based permissions control for TDB2 datasets   
-Authorization is based on data that contains in graph `http://www.smartswissparticipation.com/security`
+Authorization is based on data that contained in graph specified in the configuration, by default `urn:fuseki-oidc:security`
 where each user can have assigned read/write permissions to a concrete graph or to all graphs whose name matches a specified [ANT style pattern](http://ant.apache.org/manual/dirtasks.html#patterns).
-Also each user have complete access to it's "OWN" graph `http://www.smartswissparticipation.com/graphs/users/{username}`  
+Also each user have complete access to it's "OWN" graph, the prefix for this grapg can be spefied. By default the graph is name as follows: `urn:fuseki-oidc:user:{username}`  
 By default admin user has ability to login through basic auth and has full access to every graph in dataset
 
 
@@ -20,7 +20,7 @@ By default admin user has ability to login through basic auth and has full acces
 
 ### Building
 
-    docker build -t linkedsolutions:fuseki-oidc .
+    docker build -t linkedsolutions/fuseki-oidc .
 
 Note however that in most cases you won't need to build the docker image as this is provided via docker-hub.
 
@@ -41,10 +41,10 @@ Only this one user will be able to login with Basic auth.
 Security graph is prepopulated with the data that allows access to every graph for this user 
 so do not change the name, just password.   
 
-To build an image run `docker build -t linkedsolutions:fuseki-server .`. Tag is optional
+To build an image run `docker build -t linkedsolutions/fuseki-oidc .`. Tag is optional
 
 ### Running
-To run docker image `docker run -it --add-host=172.17.0.2:keycloak -p 9090:3030 smartswissparticipation:fuseki-server`
+To run docker image `docker run -it --add-host=172.17.0.2:keycloak -p 9090:3030 linkedsolutions/fuseki-oidc`
 the Ip 172.17.0.2 should be replaced with actual ip of Keycloak container
 you can access server at http://localhost:9090/
 
@@ -54,7 +54,7 @@ Any request to the fuseki server should contain the next header.
 `Authorization: Bearer <keycloak access token value>`
 
 ## Security configuration
-There is one predefined security graph: `<http://www.smartswissparticipation.com/security>` 
+There is one predefined security graph, the name can be configured and defaults to `<urn:fuseki-oidc:security>` 
 It will contain information about user access to the other graphs. 
 This graph contains instances of `acl:Authorization` that grant a user or a class of users
 access to a graph or all graph with a name matching a specified pattern.

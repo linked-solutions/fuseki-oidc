@@ -41,6 +41,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 :secEvaluator rdf:type perm:Evaluator ;
     perm:args [
         rdf:_1 :securityGraph ;
+        rdf:_2 "urn:fuseki-oidc:user:"
     ] ;
     perm:evaluatorClass "solutions.linked.jena.security.GraphSecurityEvaluator" .
 

@@ -92,7 +92,7 @@ LIMIT 10`);
         new QueryForm(document.getElementById("queryForm2"), "https://fuseki-oidc.factsmission.org/ds/update", `PREFIX dc: <http://purl.org/dc/elements/1.1/>
 INSERT DATA
 {
-    GRAPH <http://www.smartswissparticipation.com/graphs/users/${signinResponse.profile.email}> {
+    GRAPH <urn:fuseki-oidc:user:${signinResponse.profile.email}> {
         <http://example/book1> dc:title "A new book" ;
                                dc:creator "A.N.Other" .
     }
