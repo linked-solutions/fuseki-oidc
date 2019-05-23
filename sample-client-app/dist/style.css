@@ -9,6 +9,10 @@ body {
   background-color: #EFF8FF;
 }
 
+.vertexpand {
+  flex-grow: 1;
+}
+
 button,
 input,
 textarea,
@@ -22,9 +26,13 @@ textarea,
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  min-height: 100vh;
   max-width: 900px;
   margin: auto;
+  padding-bottom: 1rem;
 }
 
 .card {
@@ -33,7 +41,7 @@ textarea,
   box-shadow: 0px 4px #EFF8FF;
   color: #22292F;
   padding: .5rem 1rem;
-  margin: 1rem;
+  margin: 1rem 0 0;
 }
 
 .flexrow {
