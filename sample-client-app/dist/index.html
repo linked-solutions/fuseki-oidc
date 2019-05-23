@@ -16,8 +16,7 @@
         This is a simple client for Fuseki-OIDC. You can log-in or register with the identity
         provider which will allow you to run SPARQL queries and update statements against Fuseki.
         By default you will have read access to every graph and write access to your own graph.
-        Note that when you create your won graph its content and name will be visible to all other
-        users.
+        Note that when you create your own graph its content and name will be visible to all other users.
       </div>
     </div>
     <div class="card">
@@ -33,8 +32,19 @@
         <button id="signin">Login</button>
       </div>
     </div>
-    <div id="queryForm"></div>
-    <div id="queryForm2"></div>
+    <div class="vertexpand">
+      <div id="queryForm"></div>
+      <div id="queryForm2"></div>
+    </div>
+    <div class="card">
+      <div class="flexrow">
+          <div class="info">
+            Source Code on <a href="https://github.com/linked-solutions/fuseki-oidc">Github</a>
+          </div><div class="info">
+            Made by <a href="https://factsmission.com">FactsMission</a>
+          </div>
+      </div>
+    </div>
   </div>
   <script src="main.js"></script>
 </body>
