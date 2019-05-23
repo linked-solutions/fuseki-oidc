@@ -75,14 +75,6 @@ textarea,
 .error {
   padding: .5rem;
   margin: .5rem 0;
-}
-
-
-input,
-textarea,
-.result,
-.info,
-.error {
   flex-grow: 1;
   max-width: 100%;
 }
@@ -122,6 +114,10 @@ textarea {
 .info:empty,
 .error:empty {
   display: none;
+}
+
+a {
+  color: #5661B3;
 }
 
 *:focus {
