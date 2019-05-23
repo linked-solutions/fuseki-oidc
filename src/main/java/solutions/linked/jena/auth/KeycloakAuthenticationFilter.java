@@ -152,7 +152,7 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter implement
             if (authServerUrl != null) {
                 adapterConfig.setAuthServerUrl(authServerUrl);
             } else {
-                System.out.println("WARNING: Environment varaible AUTH_SERVER_URL not set.");
+                System.out.println("WARNING: Environment variable AUTH_SERVER_URL not set.");
             }
             KeycloakDeployment kd = KeycloakDeploymentBuilder.build(adapterConfig);
             deploymentContext = new AdapterDeploymentContext(kd);
