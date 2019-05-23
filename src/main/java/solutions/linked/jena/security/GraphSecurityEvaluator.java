@@ -31,31 +31,34 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private static final String OWN_GRAPH_PREFIX = "http://www.smartswissparticipation.com/graphs/users/";
+    private final String ownGraphPrefix;
 
     private static final String ONE_ACTION_QUERY =
-            "prefix sec: <http://www.smartswissparticipation.com/security#> " +
-                    "prefix users: <http://www.smartswissparticipation.com/users#> " +
-                    "prefix graphs: <http://www.smartswissparticipation.com/graphs#> " +
+            "prefix fo: <https://linked.solutions/fuseki-oidc/ontology#>  " +
+            "prefix foaf:  <http://xmlns.com/foaf/0.1/> "+
+            "prefix acl:  <http://www.w3.org/ns/auth/acl#> " +
                     "" +
                     "SELECT ?graph ?permission " +
                     "WHERE { " +
-                    "        {?u users:username ?username ;" +
-                    "            sec:graphAccess ?ga ." +
-                    "        } UNION  " +
-                    "        {<http://www.smartswissparticipation.com/users/**> sec:graphAccess ?ga .}" +
-                    "        ?ga graphs:graph ?graph ;" +
-                    "            sec:accessType ?permission" +
+                    "     {"+
+                    "        ?authorization fo:agentUserName ?username ." +
+                    "     } UNION {"+
+                    "        ?authorization acl:agentClass foaf:Agent . " +
+                    "     }"+
+                    "     ?authorization a acl:Authorization ;" + 
+                    "           fo:accessTo ?graph ;" +
+                    "           acl:mode  ?permission ." +
                     "} ";
-
+    
     private static final AntPathMatcher MATCHER = new AntPathMatcher();
 
     private Model securityModel;
 
 
 
-    public GraphSecurityEvaluator(Model securityModel) {
+    public GraphSecurityEvaluator(Model securityModel, String ownGraphPrefix) {
         this.securityModel = securityModel;
+        this.ownGraphPrefix = ownGraphPrefix;
     }
 
 
@@ -187,7 +190,7 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
     }
 
     private boolean isOwnGraph(String username, Node_URI graphIRI) {
-        String ownGraphURI = OWN_GRAPH_PREFIX + username;
+        String ownGraphURI = ownGraphPrefix + username;
         return ownGraphURI.equals(graphIRI.getURI());
     }
 
@@ -202,7 +205,7 @@ public class GraphSecurityEvaluator implements SecurityEvaluator {
             while (resultSet.hasNext()) {
                 QuerySolution solution = resultSet.next();
                 String graph = solution.get("graph").asLiteral().getString();
-                String permission = solution.get("permission").asLiteral().getString();
+                String permission = solution.get("permission").asResource().getLocalName();
                 if (grantsAccess(graph, permission, graphIRI, action)) {
                     return true;
                 }

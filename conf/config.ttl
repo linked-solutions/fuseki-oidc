@@ -7,6 +7,7 @@
 @prefix tdb:     <http://jena.apache.org/2016/tdb#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix perm:    <http://apache.org/jena/permissions/Assembler#> .
+@prefix fo: <https://linked.solutions/fuseki-oidc/ontology#> .
 
 # TDB
 tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
@@ -20,11 +21,11 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
 # Creates dataset that will be located in /db
 # and secured with secEvaluator
-:dataset rdf:type perm:SecuredDataset ;
+:dataset rdf:type fo:SecuredDataset ;
          tdb:location "/db" ;
          perm:evaluatorImpl :secEvaluator ;
-         perm:securityBaseModel :model ;
-         perm:securityGraphName "http://www.smartswissparticipation.com/security" .
+         fo:securityBaseModel :model ;
+         fo:securityGraphName "urn:fuseki-oidc:security" .
 
 :model a ja:MemoryModel ;
     ja:content [ja:externalContent <file:/sec_data.ttl>] .
@@ -33,13 +34,14 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 # and initializes with content
 :securityGraph rdf:type tdb:GraphTDB ;
     tdb:dataset :dataset ;
-    tdb:graphName <http://www.smartswissparticipation.com/security> .
+    tdb:graphName <urn:fuseki-oidc:security> .
 
 # Creates security evaluator that will be using securityGraph
 # to check user's permissions
 :secEvaluator rdf:type perm:Evaluator ;
     perm:args [
         rdf:_1 :securityGraph ;
+        rdf:_2 "urn:fuseki-oidc:user:"
     ] ;
     perm:evaluatorClass "solutions.linked.jena.security.GraphSecurityEvaluator" .
 

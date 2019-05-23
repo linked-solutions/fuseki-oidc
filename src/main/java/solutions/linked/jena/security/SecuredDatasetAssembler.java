@@ -19,7 +19,6 @@
 package solutions.linked.jena.security;
 
 import static org.apache.jena.permissions.AssemblerConstants.EVALUATOR_IMPL;
-import static org.apache.jena.permissions.AssemblerConstants.URI;
 import static org.apache.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getStringValue;
 import static org.apache.jena.tdb.assembler.VocabTDB.pUnionDefaultGraph;
@@ -39,9 +38,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
@@ -56,10 +53,6 @@ import org.apache.jena.tdb2.assembler.VocabTDB2;
 
 @Slf4j
 public class SecuredDatasetAssembler extends DatasetAssembler {
-
-    public static final Property SECURED_DATASET = ResourceFactory.createProperty(URI + "SecuredDataset");
-    public static final Property SECURITY_GRAPH_NAME = ResourceFactory.createProperty(URI + "securityGraphName");
-    public static final Property SECURITY_BASE_MODEL = ResourceFactory.createProperty(URI + "securityBaseModel");
 
     private static boolean initialized;
 
@@ -84,7 +77,7 @@ public class SecuredDatasetAssembler extends DatasetAssembler {
     private static void registerWith(AssemblerGroup group) {
         if (group == null)
             group = Assembler.general;
-        group.implementWith(SECURED_DATASET, new SecuredDatasetAssembler());
+        group.implementWith(Ontology.SecuredDataset, new SecuredDatasetAssembler());
     }
 
     @Override
@@ -94,7 +87,7 @@ public class SecuredDatasetAssembler extends DatasetAssembler {
 
     private static Dataset make(Assembler a, Resource root) {
         exactlyOneProperty(root, VocabTDB2.pLocation);
-        exactlyOneProperty(root, SECURITY_GRAPH_NAME);
+        exactlyOneProperty(root, Ontology.securityGraphName);
 
         String dir = getStringValue(root, VocabTDB2.pLocation) ;
         org.apache.jena.dboe.base.file.Location loc = Location.create(dir) ;
@@ -109,12 +102,12 @@ public class SecuredDatasetAssembler extends DatasetAssembler {
                 Log.warn(org.apache.jena.tdb2.assembler.DatasetAssemblerTDB.class, "Failed to recognize value for union graph setting (ignored): " + b) ;
         }
 
-        String securityGraphName = getStringValue(root, SECURITY_GRAPH_NAME);
+        String securityGraphName = getStringValue(root, Ontology.securityGraphName);
 
-        Resource modelResource = getUniqueResource(root, SECURITY_BASE_MODEL);
+        Resource modelResource = getUniqueResource(root, Ontology.securityBaseModel);
         if (modelResource == null) {
             throw new AssemblerException(root,
-                    String.format("Property %s must be provided for %s", SECURITY_BASE_MODEL, root));
+                    String.format("Property %s must be provided for %s", Ontology.securityBaseModel, root));
         }
         Model model = getModel(a, modelResource);
 

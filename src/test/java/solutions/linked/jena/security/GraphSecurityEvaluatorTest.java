@@ -69,7 +69,7 @@ class GraphSecurityEvaluatorTest {
         Model securityModel = new ModelCom(securityGraph);
         securityModel.read(Objects.requireNonNull(getClass().getClassLoader().getResource("test_security_data.ttl")).toString());
 
-        securityEvaluator = new GraphSecurityEvaluator(securityModel);
+        securityEvaluator = new GraphSecurityEvaluator(securityModel, "http://www.smartswissparticipation.com/graphs/users/");
     }
 
     @ParameterizedTest(name = "User {0} can {1} {2} -> {3}")

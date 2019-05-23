@@ -1,0 +1,40 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix acl:  <http://www.w3.org/ns/auth/acl#> .
+@prefix fo: <https://linked.solutions/fuseki-oidc/ontology#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> . # https://jena.apache.org/documentation/assembler/assembler.ttl
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+
+fo: a owl:Ontology.
+
+fo:accessTo a rdf:Property;
+         rdfs:comment "Points to an Ant-pattern matching the IRIs of information resources to which access is being granted.";
+         rdfs:domain acl:Authorization;
+         rdfs:label "to";
+         rdfs:range xsd:string;
+         rdfs:seeAlso <http://ant.apache.org/manual/dirtasks.html#patterns> .
+
+fo:agentUserName a rdf:Property;
+         rdfs:comment "The username of the person or social entity to being given the right";
+         rdfs:domain acl:Authorization;
+         rdfs:label "username";
+         rdfs:range xsd:string .
+
+fo:SecuredDataset a rdfs:Class, owl:Class;
+         rdfs:label "Secured Dataset";
+         rdfs:comment "A Fuseki Dataset with access restricted".
+
+fo:securityGraphName a rdf:Property;
+         rdfs:label "security graph name";
+         rdfs:comment "The name of the graph that contains the access descriptions for the dataset";
+         rdfs:domain fo:SecuredDataset;
+         rdfs:range xsd:string.
+
+
+fo:securityBaseModel a rdf:Property;
+         rdfs:label "security base model";
+         rdfs:comment "Points to the assembler model used to provide the security graph";
+         rdfs:domain fo:SecuredDataset;
+         rdfs:range ja:Model.
