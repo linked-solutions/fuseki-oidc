@@ -49,7 +49,7 @@ Add the following line to have the hostname `keycloak` point to the local machin
 
 After adding this entry you can start fuseki oidc, keycloak and the sample client simply by executing
 
-    docker-compose
+    docker-compose up
 
 First you'll want to access http://keycloak:8080/auth/admin/ to configure Keycloak as described inthe section [Keycloak setup](#keycloak-setup) below. Once keycloak is configured you may access the sample at http://localhost:8081/ and use https://keycloak:8080/auth/realms/master as authority and http://localhost:5030/ds/query / http://localhost:5030/ds/update as SPARQL endpoints. Do not use the admin user to test SPARQL (not sure why this currently doesn't work).
 
