@@ -1,7 +1,7 @@
 version: '3'
 services:
   fuseki:
-    image: linkedsolutions/fuseki-oidc 
+    image: "linkedsolutions/fuseki-oidc"
     depends_on:
       - "keycloak"
     ports:
@@ -16,6 +16,7 @@ services:
     environment:
       KEYCLOAK_USER: "admin"
       KEYCLOAK_PASSWORD: "admin"
+      PROXY_ADDRESS_FORWARDING: "true" # needed when run behind a reverse proxy
     ports:
       - "8080:8080"
   sample:
