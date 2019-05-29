@@ -1,5 +1,7 @@
 FROM maven:3.6-jdk-8
 
+EXPOSE 3030
+
 ADD src /sources/src
 ADD pom.xml /sources/pom.xml
 
