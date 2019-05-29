@@ -20,8 +20,5 @@ services:
       - "8080:8080"
   sample:
     image: "linkedsolutions/fuseki-oidc-sample-client"
-    environment:
-      KEYCLOAK_USER: "admin"
-      KEYCLOAK_PASSWORD: "admin"
     ports:
       - "8081:8080"
