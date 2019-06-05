@@ -13,6 +13,7 @@ Authorization is based on access-control definitions contained in graph specifie
 Also each user have complete access to it's "OWN" graph, the prefix for this graph can be specified. By default the graph is name as follows: `urn:fuseki-oidc:user:{username}`.
 By default the admin user has ability to login through basic auth and has full access to every graph in dataset.
 
+[![Secured installation on server screencast](https://img.youtube.com/vi/4jI5GM_AOFs/0.jpg)](https://www.youtube.com/watch?v=4jI5GM_AOFs)
 
 ## To build application you will need:
 * Docker
