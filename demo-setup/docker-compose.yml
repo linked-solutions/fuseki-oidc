@@ -1,0 +1,105 @@
+version: '3'
+
+networks:
+  default:
+    driver: bridge
+  traefik:
+    internal: true
+
+services:
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.1
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --providers.docker
+    networks:
+      - default
+      - traefik
+    restart: always
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      # - "8080:8080"
+      - "443:443"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+      - ./data/:/tmp
+
+  whoami:
+    # A container that exposes an API to show its IP address
+    image: containous/whoami
+    container_name: whoami
+    restart: always
+    networks:
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.whoami-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.whoami-http.entrypoints=web"
+      - "traefik.http.routers.whoami-http.rule=Host(`www.my-domain.org`)"
+      - "traefik.http.routers.whoami-http.middlewares=whoami-https@docker"
+      - "traefik.http.routers.whoami.entrypoints=web-secure"
+      - "traefik.http.routers.whoami.rule=Host(`www.my-domain.org`)"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.routers.whoami.tls.certresolver=default"
+    depends_on:
+      - reverse-proxy
+
+
+  fuseki:
+    image: "linkedsolutions/fuseki-oidc"
+    networks:
+      - default
+    depends_on:
+      - "keycloak"
+    volumes:
+      - ./db:/db
+    environment:
+      AUTH_SERVER_URL: "https://auth.my-domain.org/auth"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.triplestore-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.triplestore-http.entrypoints=web"
+      - "traefik.http.routers.triplestore-http.rule=Host(`triplestore.my-domain.org`)"
+      - "traefik.http.routers.triplestore-http.middlewares=triplestore-https@docker"
+      - "traefik.http.routers.triplestore.entrypoints=web-secure"
+      - "traefik.http.routers.triplestore.rule=Host(`triplestore.my-domain.org`)"
+      - "traefik.http.routers.triplestore.tls=true"
+      - "traefik.http.routers.triplestore.tls.certresolver=default"
+
+  keycloak:
+    image: "jboss/keycloak"
+    networks:
+      - default
+    environment:
+      KEYCLOAK_USER: "admin"
+      KEYCLOAK_PASSWORD: "CHANGE!!:keycloak_admin_password_in_quotes"
+      PROXY_ADDRESS_FORWARDING: "true" # needed when run behind a reverse proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.auth-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.auth-http.entrypoints=web"
+      - "traefik.http.routers.auth-http.rule=Host(`auth.my-domain.org`)"
+      - "traefik.http.routers.auth-http.middlewares=auth-https@docker"
+      - "traefik.http.routers.auth.entrypoints=web-secure"
+      - "traefik.http.routers.auth.rule=Host(`auth.my-domain.org`)"
+      - "traefik.http.routers.auth.tls=true"
+      - "traefik.http.routers.auth.tls.certresolver=default"
+
+  sample:
+    image: "linkedsolutions/fuseki-oidc-sample-client"
+    networks:
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.app1-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.app1-http.entrypoints=web"
+      - "traefik.http.routers.app1-http.rule=Host(`app1.my-domain.org`)"
+      - "traefik.http.routers.app1-http.middlewares=app1-https@docker"
+      - "traefik.http.routers.app1.entrypoints=web-secure"
+      - "traefik.http.routers.app1.rule=Host(`app1.my-domain.org`)"
+      - "traefik.http.routers.app1.tls=true"
+      - "traefik.http.routers.app1.tls.certresolver=default"
