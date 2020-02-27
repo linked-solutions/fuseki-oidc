@@ -1,0 +1,24 @@
+[api]
+  dashboard = true
+  debug = true
+
+[log]
+  level = "ERROR"
+
+[providers.docker]
+  exposedByDefault = false
+  network = "traefik"
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+  [entryPoints.web-secure]
+    address = ":443"
+  [entryPoints.dashboard]
+    address = ":8080"
+
+[certificatesResolvers]
+  [certificatesResolvers.default.acme]
+    email = "contact@myemail.com"
+    storage = "acme.json"
+    [certificatesResolvers.default.acme.tlsChallenge]
